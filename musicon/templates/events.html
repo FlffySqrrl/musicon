@@ -1,0 +1,186 @@
+{% include "base.html" %}
+{% load custom_tags %}
+{% load staticfiles %}
+
+<head>
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'sample/css/jquery-ui.css' %}" /> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+</head>
+
+<!-- <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=true"></script> -->
+<script src="http://maps.googleapis.com/maps/api/js"></script>
+
+<body>
+    <div class="row">
+        <div class="col-md-5" id="mybuttons">
+            <a href="/fav_event/"><button type="button" class="btn btn-primary btn-lg">My Events</button></a>
+            <a href="/fav_venue/"><button type="button" class="btn btn-danger btn-lg">My Venues</button></a>
+        </div>
+
+        <div class="col-md-7" id="search">
+            <div class="searchForm">
+                <form action="/search/" method="GET" style="margin-left:15px">
+                <div>
+                    <label>SEARCH</label>
+                    <select name="query_type" id="query_type" style="margin-left:5px">
+                        <option value="artist">Artist</option>
+                        <option value="venue">Venue</option>
+                    </select>
+                    <input type="text" name="query_string" id="query_string" style="margin-left:5px"/>
+                    <input type="checkbox" name="sort_by_pop" value="sort_by_pop" style="margin-left:5px"/>Sort by popularity<br>
+                </div>
+            
+                <div>
+                    <!-- TEMPORARY SPACING SOLUTION -->
+                    <label>DATE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                    <!-- TEMPORARY SPACING SOLUTION -->
+                    <label for="start_date">From</label> <input type="date" name="start_date" id="start_date" placeholder="yyyy-mm-dd" style="margin-left:5px"/>
+                    <label for="end_date">to</label> <input type="date" name="end_date" id="end_date" placeholder="yyyy-mm-dd" style="margin-left:5px"/>
+                    <input type="submit" value="Search" style="margin-left:5px"/>
+                </div>
+                </form>
+            </div>
+
+            <!-- Format the search message. -->
+            <p>
+            {% if query_string %}
+                * Showing events containing the {{ query_type }} "{{ query_string }}"
+                {% if start_date and end_date %}
+                    from {{ start_date }} to {{ end_date }}
+                {% elif start_date %}
+                    on and after {{ start_date }}
+                {% elif end_date %}
+                    from now to {{ end_date }}
+                {% endif %}
+            {% else %}
+                {% if start_date and end_date %}
+                    * Showing events from {{ start_date }} to {{ end_date }}
+                {% elif start_date %}
+                    * Showing events on and after {{ start_date }}
+                {% elif end_date %}
+                    * Showing events from now to {{ end_date }}
+                {% endif %}
+            {% endif %}
+            </p>
+        </div>
+    </div>
+    <hr>
+    <div class="row">
+        <div class="col-md-6">
+            <div id="form_e">
+                <form action="/add_fav_event/" method"POST" class="form-inline" style="margin-left:15px">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        {{ form_e.as_p }}
+                    </div>
+                    <button type="submit" class="btn btn-primary" value="Add Event" style="margin-left:5px">Add Event</button>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div id="form_v">
+                <form action="/add_fav_venue/" method"POST" class="form-inline" style="margin-left:15px">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        {{ form_v.as_p }}
+                    </div>
+                    <button type="submit" class="btn btn-danger" value="Add Venue" style="margin-left:5px">Add Venue</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-5">
+            <center><div id="googleMap" style="width:500px;height:530px;margin-left:15px;"></div></center>
+        </div>
+
+        <div class="col-md-7">
+            {% block content %}
+                <table class="table table-responsive" id="list">
+                    <thead>
+                        <th>Venue</th>
+                        <th>Type</th>
+                        <th>Artist</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>URL</th>
+                        <th>SNS</th>
+                    </thead>
+                    <tbody>
+                        {% for eID in event_ids %}
+                        <tr>
+                            <!-- Only print the venue if it's not None. -->
+                            {% if not venues|get_value:eID == None %}
+                                <td>{{ venues|get_value:eID }}</td>
+                                {% else %}
+                                    <td>-</td>
+                            {% endif %}
+                            
+                            {% if types|get_value:eID == None %}
+                                <td>-</td>
+                                {% else %}
+                                    <td>{{ types|get_value:eID }}</td>
+                            {% endif %}
+
+                            <!-- The first artist in the list is the headliner. -->
+                            <td>
+                            {% for headliner in artists|get_value:eID|slice:"0:1" %} 
+                                <b><li>{{ headliner }}</li></b>
+                            {% endfor %}
+                            
+                            <!-- The remaining artist in the list. -->
+                            {% for support in artists|get_value:eID|slice:"1:" %}
+                                <li>{{ support }}</li>
+                            {% endfor %}
+                            </td>
+
+                            <td>{{ dates|get_value:eID }}</td>
+
+                            <!-- Only print the time if it's not None. -->
+                            {% if not times|get_value:eID == None %} 
+                                <td>{{ times|get_value:eID }}</td>
+                                {% else %}
+                                    <td>-</td>
+                            {% endif %}
+
+                            <td><a href={{ urls|get_value:eID }}>Songkick Page</a></td>
+
+                            <td>
+                            <a href="http://www.facebook.com/sharer/sharer.php?u={{ urls|get_value:eID }}" onclick="popupcenter(this); return false;" target="_blank"> <img src="/static/img/facebook_small.png"  width="16" height="16" border="0" alt="Share" /></a>
+
+                            <a href="http://twitter.com/share?url={{ urls|get_value:eID }}&text=Music On!&hashtags=musicon.ca" onclick="popupcenter(this); return false;" target="_blank"><img src="/static/img/twitter_small.png" width="16" height="16" border="0" alt="Twitter" /></a>
+
+                            <a href="https://plus.google.com/share?url={{ urls|get_value:eID }}" onclick="popupcenter(this); return false;" target="_blank"><img src="/static/img/gplus_small.png" width="16" height="16" border="0" alt="Google+" /></a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endblock %}
+        </div>
+    </div>
+
+    <script type="text/javascript">
+    function popupcenter(s)
+        {   var x = screen.width/2 - 700/2;
+            var y = screen.height/2 - 450/2;
+            window.open(s.href, 'sharegplus','height=485,width=700,left='+x+',top='+y);
+        }
+    </script>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
+
+    <!-- for styling -->
+    <script type="text/javascript" src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+    <!-- <script type="text/javascript" src="{% static 'sample/js/jquery-ui.js' %}"></script> -->
+    <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+
+    <!-- <script>
+        $(function() {
+            $("#datepicker").datepicker();
+        });
+    </script> -->
+
+</body>

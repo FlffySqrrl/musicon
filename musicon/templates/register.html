@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <center><h2>User Registration</h2><center>
+    All fields are required.
+    {% if form.errors %}
+        <p style="color:red">Some fields are invalid, please try again.</p>
+    {% endif %}
+    <hr></hr>
+    <div class="container">
+    <form action="/accounts/register/" method="POST">
+        {% csrf_token %}
+        <p>
+            <label for="username">Username</label>
+            <input type="text" name="username" value="" id="username" placeholder="Username">
+            <i>(30 or less characters.)</i>
+        </p>
+        <p>
+            <label for="email">Email</label>
+            <input type="text" name="email" value="" id="email" placeholder="E-mail">
+        </p>
+        <p>
+            <label for="password1">Password</label>
+            <input type="password" name="password1" value="" id="password1" placeholder="Password">
+        </p>
+        <p>
+            <label for="password2">Password Confirmation</label>
+            <input type="password" name="password2" value="" id="password2" placeholder="Re-enter password">
+        </p>
+        <input type="submit" value="Submit" />
+{% endblock %}
