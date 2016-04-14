@@ -19,6 +19,14 @@ $(document).ready(function() {
     // Enable tooltips.
     $("[data-toggle='tooltip']").tooltip();
 
+    $("tr").click(function() {
+        var eventId = $(this).attr("id");
+        var marker = mapMarkers.reduce(function(a, b) {
+            return (a["eventId"] === eventId && a) || (b["eventId"] === eventId && b);
+        });
+        new google.maps.event.trigger(marker, "click");
+    });
+
     // -------------------------------------------------------------------------
     // SEARCH FORM
     // -------------------------------------------------------------------------
@@ -77,13 +85,13 @@ $(document).ready(function() {
             };
             map = new google.maps.Map(document.getElementById("map"), mapSettings);
 
-            getEvents();
-            getVenues();
-            createMarkers();
-
             mapEvents  = [];
             mapVenues  = [];
             mapMarkers = [];
+
+            getEvents();
+            getVenues();
+            createMarkers();
         }
 
         /**
