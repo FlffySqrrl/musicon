@@ -9,7 +9,7 @@ from django.shortcuts import render, render_to_response
 from django.template import Context, loader, RequestContext
 from django.utils import timezone
 
-from forms import RegistrationForm
+from forms import *
 from models import *
 from parse import *
 
