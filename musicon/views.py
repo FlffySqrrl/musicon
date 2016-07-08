@@ -14,275 +14,308 @@ from models import *
 from parse import *
 
 # ------------------------------------------------------------------------------
-# Homepage
+# MAIN PAGE
 # ------------------------------------------------------------------------------
 
 def events(request):
-    """
+    '''
     Displays all upcoming events.
-    """
-    Events = []
+    '''
+    events = []
 
-    # Sort upcoming events by date.
-    upcoming_events = Event.objects.filter(startDate__gte = datetime.date.today)
-    upcoming_events = upcoming_events.order_by('-startDate').reverse()
+    # Get all upcoming events.
+    upcoming = Event.objects.filter(start_date__gte=datetime.date.today)
+    upcoming = upcoming.order_by('start_date')
 
-    for event in upcoming_events:
-        Events.append(event)
+    for e in upcoming:
+        events.append(e)
 
-    context = collect_events(Events)
+    context = collect_events(events)
     return render(request, 'events.html', context)
 
 # ------------------------------------------------------------------------------
-# Search
+# SEARCH
 # ------------------------------------------------------------------------------
 
 def search(request):
-    """
-    Filters out events based on the search criteria.
-    """
-    query_type, query_string, start_date, end_date, sort_by_pop = False, False, False, False, False
-    Events, query_type_ids, matching_event_ids = [], [], []
+    '''
+    Filters events based on the search criteria.
+    '''
+    events = []
 
-    # Get query information entered by the user.
-    query_type = request.GET['query_type'] if 'query_type' in request.GET else None
-    query_string = request.GET['query_string'] if 'query_string' in request.GET and request.GET['query_string'].strip() else None
-    start_date = request.GET['start_date'] if 'start_date' in request.GET else None
-    end_date = request.GET['end_date'] if 'end_date' in request.GET else None
-    sort_by_pop = request.GET['sort_by_pop'] if 'sort_by_pop' in request.GET else None
+    # Parse URL query string.
+    by, q, start, end, pop = None, None, None, None, None
+    if 'by' in request.GET:
+        by = request.GET['by']
+    if 'q' in request.GET and request.GET['q'].strip():
+        q = request.GET['q']
+    if 'start' in request.GET:
+        start = request.GET['start']
+        if start:
+            start = [int(x) for x in str(start).split('-')]
+            start = datetime.date(start[0], start[1], start[2])
+    if 'end' in request.GET:
+        end = request.GET['end']
+        if end:
+            end = [int(x) for x in str(end).split('-')]
+            end = datetime.date(end[0], end[1], end[2])
+    if 'pop' in request.GET:
+        pop = request.GET['pop']
 
-    # Display all events if the query type is empty.
-    if not query_type:
+    # Display all events if no search type was selected.
+    if not by:
         return events(request)
 
     # Get all upcoming events.
-    upcoming_events = Event.objects.filter(startDate__gte = datetime.date.today)
-    upcoming_events = upcoming_events.order_by('-startDate').reverse()
+    upcoming = Event.objects.filter(start_date__gte=datetime.date.today)
+    upcoming = upcoming.order_by('start_date')
 
-    # Find matching events if a query string was entered.
-    # Step 1. Look up artists/venues with names containing the query string.
-    # Step 2. Get the IDs of those artists/venues.
-    # Step 3. Get the IDS of matching events.
-    if query_string:
-        if query_type == 'artist':
-            similar_artists = list(Artist.objects.filter(aName__icontains = query_string))
-            for artist in similar_artists:
-                query_type_ids.append(artist.aID)
-            for artist_id in query_type_ids:
-                has_artist = list(Has_Artist.objects.filter(aID = artist_id))
-                for event in has_artist:
-                    matching_event_ids.append(event.eID_id)
-        elif query_type == 'venue':
-            similar_venues = list(Venue.objects.filter(vName__icontains = query_string))
-            for venue in similar_venues:
-                query_type_ids.append(venue.vID)
-            for venue_id in query_type_ids:
-                has_venue = list(Has_Venue.objects.filter(vID = venue_id))
-                for event in has_venue:
-                    matching_event_ids.append(event.eID_id)
+    # Find matching events if a search string was entered.
+    # 1. Look up artists/venues with matching names.
+    # 2. Get matching artist/venue IDs.
+    # 3. Get matching event IDs.
+    event_ids = []
+    if q:
+        if by == 'artist':
+            artist_ids = []
+            artists = list(Artist.objects.filter(artist_name__icontains=q))
+            for a in artists:
+                artist_ids.append(a.artist_id)
+            for id in artist_ids:
+                has_artist = list(HasArtist.objects.filter(artist_id=id))
+                for ha in has_artist:
+                    event_ids.append(ha.event_id_id)
+        elif by == 'venue':
+            venue_ids = []
+            venues = list(Venue.objects.filter(venue_name__icontains=q))
+            for v in venues:
+                venue_ids.append(v.venue_id)
+            for id in venue_ids:
+                has_venue = list(HasVenue.objects.filter(venue_id=id))
+                for hv in has_venue:
+                    event_ids.append(hv.event_id_id)
 
-    # Parse date range and filter events by dates.
-    if start_date:
-        start_date = [int(x) for x in str(start_date).split('-')]
-        start_date = datetime.date(start_date[0], start_date[1], start_date[2])
-    if end_date:
-        end_date = [int(x) for x in str(end_date).split('-')]
-        end_date = datetime.date(end_date[0], end_date[1], end_date[2])
-
-    if start_date and end_date:
-        upcoming_events = upcoming_events.filter(startDate__gte = start_date, startDate__lte = end_date)
-    elif start_date:
-        upcoming_events = upcoming_events.filter(startDate__gte = start_date)
-    elif end_date:
-        upcoming_events = upcoming_events.filter(startDate__lte = end_date)
+    # Filter events by date(s).
+    if start and end:
+        upcoming = upcoming.filter(start_date__gte=start, start_date__lte=end)
+    elif start:
+        upcoming = upcoming.filter(start_date__gte=start)
+    elif end:
+        upcoming = upcoming.filter(start_date__lte=end)
 
     # Sort by popularity if checked.
-    if sort_by_pop:
-        upcoming_events = upcoming_events.order_by('-popularity').reverse()
+    if pop:
+        upcoming = upcoming.order_by('-popularity')
 
-    # Add an event to Events if it's a matching event or the query string
-    # is empty, for the case where the user is only filtering by dates.
-    for event in upcoming_events:
-        if (event.eID in matching_event_ids) or (not query_string):
-            Events.append(event)
+    # Add an event if:
+    # 1. It is a matching event.
+    # 2. The search string is empty.
+    for e in upcoming:
+        if (e.event_id in event_ids) or (not q):
+            events.append(e)
 
-    context = collect_events(Events)
-    context['query_type'] = query_type
-    context['query_string'] = query_string
-    context['start_date'] = start_date
-    context['end_date'] = end_date
+    context = collect_events(events)
+    context['by'] = by
+    context['q'] = q
+    context['start'] = start
+    context['end'] = end
     return render(request, 'events.html', context)
 
 # ------------------------------------------------------------------------------
-# Adding User Favourites
+# ADDING USER FAVOURITES
 # ------------------------------------------------------------------------------
 
 def add_fav_event(request):
-    """
-    Adds the matching event to Fav_Event when the user clicks on "Add Event".
-    """
-    temp_events = []
+    '''
+    Adds the matching event to FavEvent when the user clicks on 'Add Event'.
+    '''
+    curr_fav_events = []
+
     if request.user.is_authenticated():
-        uID = request.user.id
-        fav_events = Fav_Event.objects.filter(uID = uID)
-        for event in fav_events:
-             e = Event.objects.get(eName = event.eID)
-             temp_events.append(e)
+        user_id = request.user.id
+        fav_events = FavEvent.objects.filter(user_id=user_id)
+        for fe in fav_events:
+            event = Event.objects.get(event_id=fe.event_id_id)
+            curr_fav_events.append(event)
         if request.method == 'GET':
-            eName = request.GET.get('eName', '')
-            if "&#39;" in eName:
-                eName = eName.replace("&#39;", "'")
+            event_name = request.GET.get('event_name', '')
+            if '&#39;' in event_name:
+                event_name = event_name.replace('&#39;', "'")
             try:
-                event = Event.objects.get(eName = eName)
+                event = Event.objects.get(event_name=event_name)
             except ObjectDoesNotExist:
                 event = None
             else:
-                user = User.objects.get(id = uID)
-                if event not in temp_events:
-                    fe = Fav_Event(uID = user, eID = event)
-                    fe.save()
-    return fav_event(request)
+                user = User.objects.get(id=user_id)
+                if event not in curr_fav_events:
+                    this_fav_event = FavEvent(user_id=user, event_id=event)
+                    this_fav_event.save()
+
+    return disp_fav_events(request)
 
 def add_fav_venue(request):
-    """
-    Adds the matching venue to Fav_Venue when the user clicks on "Add Venue".
-    """
-    temp_venues = []
+    '''
+    Adds the matching venue to FavVenue when the user clicks on 'Add Venue'.
+    '''
+    curr_fav_venues = []
+
     if request.user.is_authenticated():
-        uID = request.user.id
-        fav_venues = Fav_Venue.objects.filter(uID = uID)
-        for venue in fav_venues:
-            v = Venue.objects.get(vName = venue.vID)
-            temp_venues.append(v)
+        user_id = request.user.id
+        fav_venues = FavVenue.objects.filter(user_id=user_id)
+        for fv in fav_venues:
+            venue = Venue.objects.get(venue_id=fv.venue_id_id)
+            curr_fav_venues.append(venue)
         if request.method == 'GET':
             lat = request.GET.get('lat', '')
-            lon = request.GET.get('lon', '')
-            venue = Venue.objects.get(lat = float(lat), lon = float(lon))
-            user = User.objects.get(id = uID)
-            if venue not in temp_venues:
-                fv = Fav_Venue(uID = user, vID = venue)
-                fv.save()
-    return fav_venue(request)
+            lng = request.GET.get('lng', '')
+            venue = Venue.objects.get(lat=float(lat), lng=float(lng))
+            user = User.objects.get(id=user_id)
+            if venue not in curr_fav_venues:
+                this_fav_venue = FavVenue(user_id=user, venue_id=venue)
+                this_fav_venue.save()
+
+    return disp_fav_venues(request)
 
 # ------------------------------------------------------------------------------
-# Displaying User Favourites
+# DISPLAYING USER FAVOUITES
 # ------------------------------------------------------------------------------
 
-def fav_event(request):
-    """
+def disp_fav_events(request):
+    '''
     Displays a user's favourite events.
-    """
-    Events = []
+    '''
+    events = []
 
-    # Get the user's favourite events.
-    fav_events = Fav_Event.objects.filter(uID = request.user.id)
+    fav_events = FavEvent.objects.filter(user_id=request.user.id)
+    for fe in fav_events:
+        event = Event.objects.get(event_id=fe.event_id_id)
+        events.append(event)
 
-    # Add the user's favourite events to Events.
-    for event in fav_events:
-        Events.append(Event.objects.get(eName = event.eID))
-
-    context = collect_events(Events)
+    context = collect_events(events)
     return render(request, 'events.html', context)
 
-def fav_venue(request):
-    """
+def disp_fav_venues(request):
+    '''
     Displays events at a user's favourite venues.
-    """
-    Events = []
+    '''
+    events = []
 
-    # Get the user's favourite venues.
-    fav_venues = Fav_Venue.objects.filter(uID = request.user.id)
+    fav_venues = FavVenue.objects.filter(user_id=request.user.id)
+    for fv in fav_venues:
+        has_venue = HasVenue.objects.filter(venue_id=fv.venue_id_id)
+        for hv in has_venue:
+            event = Event.objects.get(event_id=hv.event_id_id)
+            events.append(event)
 
-    # Add events at the user's favourite venues to Events.
-    for venue in fav_venues:
-        events = Has_Venue.objects.filter(vID = venue.vID)
-        for event in events:
-            Events.append(Event.objects.get(eName = event.eID))
-
-    context = collect_events(Events)
+    context = collect_events(events)
     return render(request, 'events.html', context)
 
 # ------------------------------------------------------------------------------
-# Helpers
+# EVENT LISTING
 # ------------------------------------------------------------------------------
 
-def collect_events(Events):
-    """
-    Collects information to be fed to the events list
-    and events map given an array of Event objects.
-    """
-    # For events list.
-    event_ids = []
-    artists, venues, dates, types, times, urls, pops = {}, {}, {}, {}, {}, {}, {}
+def collect_events(event_objs):
+    '''
+    Collects event information to be fed to events.html.
+    '''
 
-    # For events map.
-    Artists, Venues = [], []
+    # Main entities
+    # event_objs = event_objs
+    artist_objs = []
+    venue_objs = []
+
+    # Event details
+    event_ids = []
+    artists, venues, types, urls, dates, times, pops = {}, {}, {}, {}, {}, {}, {}
+
+    # Forms
     event_form = EventForm()
     venue_form = VenueForm()
 
-    # Populate the arrays and the dictionaries.
-    for event in Events:
+    for e in event_objs:
 
-        # Get the artists.
-        # The headliner will be the first element in the arrays,
-        # followed by the supporting artists. If the event is a
-        # festival, then the festival name will be the "headliner".
-        artist_names, artist_objs = [], []
-        if event.eType == 'Festival':
-            artist_names.append(event.eName)
-        lineup = list(Has_Artist.objects.filter(eID = event.eID).order_by('-aType').reverse())
-        for artist in lineup:
-            artist = Artist.objects.get(aID = artist.aID_id)
-            artist_names.append(artist.aName)
-            artist_objs.append(artist)
+        # Get artist(s).
+        lineup = []
+        lineup_names = []
+        has_artist = list(HasArtist.objects.filter(event_id=e.event_id).order_by('artist_order'))
+        if e.event_type == 'Festival':
+            lineup_names.append(e.event_name)
+        for ha in has_artist:
+            artist = Artist.objects.get(artist_id=ha.artist_id_id)
+            lineup.append(artist)
+            lineup_names.append(artist.artist_name)
 
-        # Get the venue.
-        # Assign None if the event doesn't have a venue yet.
+        # Get venue.
         try:
-            venue = Has_Venue.objects.get(eID = event.eID)
+            has_venue = HasVenue.objects.get(event_id=e.event_id)
         except ObjectDoesNotExist:
             venue = None
         else:
-            venue = Venue.objects.get(vID = venue.vID_id)
+            venue = Venue.objects.get(venue_id=has_venue.venue_id_id)
 
-        Artists.append(artist_objs)
-        Venues.append(venue)
+        artist_objs.append(lineup)
+        venue_objs.append(venue)
 
-        event_ids.append(event.eID)
-        artists[event.eID] = artist_names
-        venues[event.eID] = venue.vName if venue is not None else None
-        dates[event.eID] = event.startDate
-        types[event.eID] = event.eType
-        times[event.eID] = event.startTime[:5] if event.startTime is not None else None
-        urls[event.eID] = event.eUrl
-        pops[event.eID] = event.popularity
+        event_ids.append(e.event_id)
 
-    context = Context({'event_ids': event_ids, 'artists': artists, 'venues': venues,
-                       'dates': dates, 'types': types, 'times': times, 'urls': urls, 'pops': pops,
-                       'Events': Events, 'Artists': Artists, 'Venues': Venues,
-                       'form_e': event_form, 'form_v': venue_form,})
+        artists[e.event_id] = lineup_names
+        venues[e.event_id]  = venue.venue_name if venue else None
+        types[e.event_id]   = e.event_type
+        urls[e.event_id]    = e.event_url
+        dates[e.event_id]   = e.start_date
+        times[e.event_id]   = e.start_time[:5] if e.start_time else None
+        pops[e.event_id]    = e.popularity
+
+    FACEBOOK_SHARE_URL = "http://www.facebook.com/sharer/sharer.php?u="
+    TWITTER_SHARE_URL = "http://twitter.com/share?url="
+    GOOGLE_SHARE_URL = "https://plus.google.com/share?url="
+
+    context = Context({ 'events'     : event_objs,
+                        'artists'    : artist_objs,
+                        'venues'     : venue_objs,
+
+                        'e_ids'      : event_ids,
+                        'e_artists'  : artists,
+                        'e_venues'   : venues,
+                        'e_types'    : types,
+                        'e_urls'     : urls,
+                        'e_dates'    : dates,
+                        'e_times'    : times,
+                        'e_pops'     : pops,
+
+                        'event_form' : event_form,
+                        'venue_form' : venue_form,
+
+                        'facebook'   : FACEBOOK_SHARE_URL,
+                        'twitter'    : TWITTER_SHARE_URL,
+                        'google'     : GOOGLE_SHARE_URL,
+                     })
     return context
 
 # ------------------------------------------------------------------------------
-# User Registration & Authentication
+# AUTHENTICATION SYSTEM
 # ------------------------------------------------------------------------------
+
+def auth_view(request):
+
+    # Get username, return '' if there is no valid data.
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
+    user = auth.authenticate(username=username, password=password)
+
+    if user:
+        auth.login(request, user)
+        return HttpResponseRedirect('/accounts/loggedin')
+    else:
+        return HttpResponseRedirect('/accounts/invalid_login')
 
 def login(request):
     c = {}
     c.update(csrf(request))
     return render_to_response('login.html', c)
 
-def auth_view(request):
-    # GET username, if there is no valid data, return ''.
-    username = request.POST.get('username', '')
-    password = request.POST.get('password', '')
-    user = auth.authenticate(username = username, password = password)
-
-    if user is not None:
-        auth.login(request, user)
-        return HttpResponseRedirect('/accounts/loggedin')
-    else:
-        return HttpResponseRedirect('/accounts/invalid_login')
+def invalid_login(request):
+    return render_to_response('invalid_login.html')
 
 def loggedin(request):
     c = {}
@@ -290,9 +323,6 @@ def loggedin(request):
     c['username'] = request.user.username
     test = request.POST.get('title', '')
     return HttpResponseRedirect('/')
-
-def invalid_login(request):
-    return render_to_response('invalid_login.html')
 
 def logout(request):
     auth.logout(request)
@@ -305,7 +335,7 @@ def register_user(request):
             form.save()
             return HttpResponseRedirect('/accounts/register_success')
         else:
-            return render_to_response('register.html', {'form': form})
+            return render_to_response('register.html', {'form' : form})
     args = {}
     args.update(csrf(request))
     args['form'] = RegistrationForm()
