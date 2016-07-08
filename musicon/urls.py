@@ -33,6 +33,6 @@ urlpatterns = patterns('',
     # User pages
     url(r'^add_fav_event/$', 'musicon.views.add_fav_event'),
     url(r'^add_fav_venue/$', 'musicon.views.add_fav_venue'),
-    url(r'^fav_event/$', 'musicon.views.fav_event'),
-    url(r'^fav_venue/$', 'musicon.views.fav_venue'),
+    url(r'^myevents/$', 'musicon.views.disp_fav_events'),
+    url(r'^myvenues/$', 'musicon.views.disp_fav_venues'),
 )

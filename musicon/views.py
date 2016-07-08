@@ -139,8 +139,6 @@ def add_fav_event(request):
             curr_fav_events.append(event)
         if request.method == 'GET':
             event_name = request.GET.get('event_name', '')
-            if '&#39;' in event_name:
-                event_name = event_name.replace('&#39;', "'")
             try:
                 event = Event.objects.get(event_name=event_name)
             except ObjectDoesNotExist:
@@ -214,25 +212,25 @@ def disp_fav_venues(request):
 # EVENT LISTING
 # ------------------------------------------------------------------------------
 
-def collect_events(event_objs):
+def collect_events(events):
     '''
     Collects event information to be fed to events.html.
     '''
 
     # Main entities
-    # event_objs = event_objs
-    artist_objs = []
-    venue_objs = []
+    # events = events
+    artists = []
+    venues = []
 
     # Event details
-    event_ids = []
-    artists, venues, types, urls, dates, times, pops = {}, {}, {}, {}, {}, {}, {}
+    e_ids = []
+    e_artists, e_venues, e_types, e_urls, e_dates, e_times, e_pops = {}, {}, {}, {}, {}, {}, {}
 
     # Forms
     event_form = EventForm()
     venue_form = VenueForm()
 
-    for e in event_objs:
+    for e in events:
 
         # Get artist(s).
         lineup = []
@@ -240,10 +238,11 @@ def collect_events(event_objs):
         has_artist = list(HasArtist.objects.filter(event_id=e.event_id).order_by('artist_order'))
         if e.event_type == 'Festival':
             lineup_names.append(e.event_name)
-        for ha in has_artist:
-            artist = Artist.objects.get(artist_id=ha.artist_id_id)
-            lineup.append(artist)
-            lineup_names.append(artist.artist_name)
+        if e.event_type == 'Concert':
+            for ha in has_artist:
+                artist = Artist.objects.get(artist_id=ha.artist_id_id)
+                lineup.append(artist)
+                lineup_names.append(artist.artist_name)
 
         # Get venue.
         try:
@@ -253,42 +252,34 @@ def collect_events(event_objs):
         else:
             venue = Venue.objects.get(venue_id=has_venue.venue_id_id)
 
-        artist_objs.append(lineup)
-        venue_objs.append(venue)
+        artists.append(lineup)
+        venues.append(venue)
 
-        event_ids.append(e.event_id)
+        e_ids.append(e.event_id)
 
-        artists[e.event_id] = lineup_names
-        venues[e.event_id]  = venue.venue_name if venue else None
-        types[e.event_id]   = e.event_type
-        urls[e.event_id]    = e.event_url
-        dates[e.event_id]   = e.start_date
-        times[e.event_id]   = e.start_time[:5] if e.start_time else None
-        pops[e.event_id]    = e.popularity
+        e_artists[e.event_id] = lineup_names
+        e_venues[e.event_id]  = venue.venue_name if venue else None
+        e_types[e.event_id]   = e.event_type
+        e_urls[e.event_id]    = e.event_url
+        e_dates[e.event_id]   = e.start_date
+        e_times[e.event_id]   = e.start_time[:5] if e.start_time else None
+        e_pops[e.event_id]    = e.popularity
 
-    FACEBOOK_SHARE_URL = "http://www.facebook.com/sharer/sharer.php?u="
-    TWITTER_SHARE_URL = "http://twitter.com/share?url="
-    GOOGLE_SHARE_URL = "https://plus.google.com/share?url="
+    context = Context({ 'events'     : events,
+                        'artists'    : artists,
+                        'venues'     : venues,
 
-    context = Context({ 'events'     : event_objs,
-                        'artists'    : artist_objs,
-                        'venues'     : venue_objs,
-
-                        'e_ids'      : event_ids,
-                        'e_artists'  : artists,
-                        'e_venues'   : venues,
-                        'e_types'    : types,
-                        'e_urls'     : urls,
-                        'e_dates'    : dates,
-                        'e_times'    : times,
-                        'e_pops'     : pops,
+                        'e_ids'      : e_ids,
+                        'e_artists'  : e_artists,
+                        'e_venues'   : e_venues,
+                        'e_types'    : e_types,
+                        'e_urls'     : e_urls,
+                        'e_dates'    : e_dates,
+                        'e_times'    : e_times,
+                        'e_pops'     : e_pops,
 
                         'event_form' : event_form,
                         'venue_form' : venue_form,
-
-                        'facebook'   : FACEBOOK_SHARE_URL,
-                        'twitter'    : TWITTER_SHARE_URL,
-                        'google'     : GOOGLE_SHARE_URL,
                      })
     return context
 
@@ -335,7 +326,7 @@ def register_user(request):
             form.save()
             return HttpResponseRedirect('/accounts/register_success')
         else:
-            return render_to_response('register.html', {'form' : form})
+            return render_to_response('register.html', { 'form' : form })
     args = {}
     args.update(csrf(request))
     args['form'] = RegistrationForm()
