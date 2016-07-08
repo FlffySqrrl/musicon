@@ -110,7 +110,7 @@
                         <div class="dropdown">
                             <div id="user-menu-btn" class="btn-group">
                                 <div class="btn btn-default navbar-btn">
-                                    <strong><span class="songkick-pink">{{ user.first_name }} {{ user.last_name }}</span></strong>
+                                    <strong><span class="songkick-pink">{{ user.username }}</span></strong>
                                 </div>
                                 <div class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
                                     <span class="caret"></span>
@@ -137,6 +137,16 @@
 
             </div> <!-- /.container-fluid -->
         </nav> <!-- /.navbar-default -->
+
+        <nav class="navbar navbar-default navbar-fixed-bottom">
+            <div class="container-fluid">
+                <div class="nav navbar-nav navbar-right">
+                    <a href="http://www.songkick.com">
+                        <img id="songkick-concerts" alt="Concerts by Songkick" src="{% static 'img/sk_concerts.png' %}" />
+                    </a>
+                </div>
+            </div>
+        </nav>
     </body>
 
     {% block content %}

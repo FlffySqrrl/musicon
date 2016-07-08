@@ -65,11 +65,17 @@
 }
 
 #search-field {
-    width: 80px;
+    width: 100px;
 }
 
 #search-message {
     margin-left: 2px;
+}
+
+#songkick-concerts {
+    width: 130px;
+    height: 30px;
+    margin-top: 10px;
 }
 
 #signup-btn,
@@ -80,8 +86,7 @@
     color: white;
 }
 
-#signin-btn,
-#user-menu-btn {
+.navbar-right {
     margin-right: 5px;
 }
 

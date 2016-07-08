@@ -33,7 +33,7 @@ $(document).ready(function() {
     // Animate the search field.
     $("#search-field").focus(function() {
         $(this).attr("default-width", $(this).css("width"));
-        $(this).animate({ width : 120 }, "fast");
+        $(this).animate({ width : 150 }, "fast");
     }).blur(function() {
         var defaultWidth = $(this).attr("default-width");
         $(this).animate({ width : defaultWidth }, "fast");
