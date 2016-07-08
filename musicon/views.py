@@ -13,9 +13,9 @@ from forms import RegistrationForm
 from models import *
 from parse import *
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Homepage
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def events(request):
     """
@@ -33,9 +33,9 @@ def events(request):
     context = collect_events(Events)
     return render(request, 'events.html', context)
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Search
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def search(request):
     """
@@ -43,7 +43,7 @@ def search(request):
     """
     query_type, query_string, start_date, end_date, sort_by_pop = False, False, False, False, False
     Events, query_type_ids, matching_event_ids = [], [], []
-    
+
     # Get query information entered by the user.
     query_type = request.GET['query_type'] if 'query_type' in request.GET else None
     query_string = request.GET['query_string'] if 'query_string' in request.GET and request.GET['query_string'].strip() else None
@@ -113,13 +113,13 @@ def search(request):
     context['end_date'] = end_date
     return render(request, 'events.html', context)
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Adding User Favourites
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def add_fav_event(request):
     """
-    Adds the matching event to Fav_Event when the user clicks on "Add Event". 
+    Adds the matching event to Fav_Event when the user clicks on "Add Event".
     """
     temp_events = []
     if request.user.is_authenticated():
@@ -164,9 +164,9 @@ def add_fav_venue(request):
                 fv.save()
     return fav_venue(request)
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Displaying User Favourites
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def fav_event(request):
     """
@@ -177,7 +177,7 @@ def fav_event(request):
     # Get the user's favourite events.
     fav_events = Fav_Event.objects.filter(uID = request.user.id)
 
-    # Add the user's favourite events to Events.    
+    # Add the user's favourite events to Events.
     for event in fav_events:
         Events.append(Event.objects.get(eName = event.eID))
 
@@ -202,13 +202,13 @@ def fav_venue(request):
     context = collect_events(Events)
     return render(request, 'events.html', context)
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Helpers
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def collect_events(Events):
     """
-    Collects information to be fed to the events list 
+    Collects information to be fed to the events list
     and events map given an array of Event objects.
     """
     # For events list.
@@ -224,8 +224,8 @@ def collect_events(Events):
     for event in Events:
 
         # Get the artists.
-        # The headliner will be the first element in the arrays, 
-        # followed by the supporting artists. If the event is a 
+        # The headliner will be the first element in the arrays,
+        # followed by the supporting artists. If the event is a
         # festival, then the festival name will be the "headliner".
         artist_names, artist_objs = [], []
         if event.eType == 'Festival':
@@ -257,15 +257,15 @@ def collect_events(Events):
         urls[event.eID] = event.eUrl
         pops[event.eID] = event.popularity
 
-    context = Context({'event_ids': event_ids, 'artists': artists, 'venues': venues, 
+    context = Context({'event_ids': event_ids, 'artists': artists, 'venues': venues,
                        'dates': dates, 'types': types, 'times': times, 'urls': urls, 'pops': pops,
-                       'Events': Events, 'Artists': Artists, 'Venues': Venues, 
+                       'Events': Events, 'Artists': Artists, 'Venues': Venues,
                        'form_e': event_form, 'form_v': venue_form,})
     return context
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # User Registration & Authentication
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 def login(request):
     c = {}

@@ -47,11 +47,11 @@
 
                         <li><a href="https://plus.google.com/share?url=http://musicon.ca" onclick="popupcenter(this); return false;" target="_blank"><img src="/static/img/gplus_big.jpg" width="20" height="20" border="0" alt="Google+" /></a></li>
                     </ul>
-                    
+
                 </div> <!-- /.navbar-collapse -->
             </div> <!-- /.container-fluid -->
         </nav>
-        
+
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js"></script>
 
@@ -93,10 +93,10 @@
         function getVenues() {
         "{% for Venue in Venues %}"
             var Venue = [];
-            Venue.push("{{ Venue.vName }}");            
-            Venue.push("{{ Venue.lat }}");             
-            Venue.push("{{ Venue.lon }}");                    
-            
+            Venue.push("{{ Venue.vName }}");
+            Venue.push("{{ Venue.lat }}");
+            Venue.push("{{ Venue.lon }}");
+
             Venues.push(Venue);
         "{% endfor %}"
         }
@@ -107,14 +107,14 @@
         "{% for temp in Artist %}"
             temp_Artist.push("{{ temp.aName }}");
         "{% endfor %}"
-            
+
             Artists.push(temp_Artist);
         "{% endfor %}"
         }
         </script>
 
         <!-- Styling -->
-        <script type="text/javascript" src="{% static 'js/jquery-1.11.2.min.js' %}"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
 
         {% block sidebar %}

@@ -32,7 +32,7 @@ elif os.getenv('SETTINGS_MODE') == 'prod':
     }
 else:
     # Running in development, so use a local MySQL database.
-    DATABASES = { 
+    DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
             'NAME': 'musicon',

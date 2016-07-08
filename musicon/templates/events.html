@@ -30,7 +30,7 @@
                     <input type="text" name="query_string" id="query_string" style="margin-left:5px"/>
                     <input type="checkbox" name="sort_by_pop" value="sort_by_pop" style="margin-left:5px"/>Sort by popularity<br>
                 </div>
-            
+
                 <div>
                     <!-- TEMPORARY SPACING SOLUTION -->
                     <label>DATE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
@@ -117,7 +117,7 @@
                                 {% else %}
                                     <td>-</td>
                             {% endif %}
-                            
+
                             {% if types|get_value:eID == None %}
                                 <td>-</td>
                                 {% else %}
@@ -126,10 +126,10 @@
 
                             <!-- The first artist in the list is the headliner. -->
                             <td>
-                            {% for headliner in artists|get_value:eID|slice:"0:1" %} 
+                            {% for headliner in artists|get_value:eID|slice:"0:1" %}
                                 <b><li>{{ headliner }}</li></b>
                             {% endfor %}
-                            
+
                             <!-- The remaining artist in the list. -->
                             {% for support in artists|get_value:eID|slice:"1:" %}
                                 <li>{{ support }}</li>
@@ -139,7 +139,7 @@
                             <td>{{ dates|get_value:eID }}</td>
 
                             <!-- Only print the time if it's not None. -->
-                            {% if not times|get_value:eID == None %} 
+                            {% if not times|get_value:eID == None %}
                                 <td>{{ times|get_value:eID }}</td>
                                 {% else %}
                                     <td>-</td>

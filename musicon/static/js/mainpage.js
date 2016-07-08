@@ -29,7 +29,7 @@ $(function() {
         getArtists(Artists);
 
         createMarkers();
-        
+
         Events.length = 0;
         Venues.length = 0;
         Artists.length = 0;
@@ -63,8 +63,8 @@ $(function() {
     // Enables info window when a point on the map is clicked on.
     function initializeInfoWindow(name, eventPosition) {
         if (isInfoWindowOpen(infoWindow)){
-            infoWindow.close(); 
-        } 
+            infoWindow.close();
+        }
         infoWindow = new google.maps.InfoWindow({
                         pixelOffset: new google.maps.Size(10,-25)
                      });
@@ -74,7 +74,7 @@ $(function() {
     }
 
     // When a point is clicked, the map is zoomed in and the lat and lon
-    // of the venue and the name of the event is shown on the input boxes 
+    // of the venue and the name of the event is shown on the input boxes
     // to help adding fav_event and fav_venue.
     function clickEvent(marker) {
     google.maps.event.addListener(marker, 'click', function() {
@@ -82,7 +82,7 @@ $(function() {
         map.setCenter(markerPosition);
         map.setZoom(13);
         var contentString = marker.getTitle();
-        
+
         initializeInfoWindow(contentString, marker.position);
 
         document.getElementById("id_lat").value = markerPosition.lat();

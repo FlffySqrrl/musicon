@@ -3,9 +3,9 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.forms import ModelForm
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Main entity sets.
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 class Event(models.Model):
     EVENT_TYPES = (
@@ -24,7 +24,7 @@ class Event(models.Model):
 
     class Meta:
         ordering = ['startDate']
-    
+
     def __unicode__(self):
         return self.eName
 
@@ -62,9 +62,9 @@ class VenueForm(ModelForm):
         model = Venue
         fields = ['lat', 'lon']
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Relationships between main entity sets.
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 class Has_Artist(models.Model):
     ARTIST_TYPES = (
@@ -86,7 +86,7 @@ class Has_Artist(models.Model):
 class Has_Venue(models.Model):
     eID = models.ForeignKey(Event, verbose_name = u'Event ID')
     vID = models.ForeignKey(Venue, verbose_name = u'Venue ID')
-    
+
     class Meta:
         ordering = ['eID']
         unique_together = ('eID', 'vID',)
@@ -95,9 +95,9 @@ class Has_Venue(models.Model):
     def __unicode__(self):
         return str(self.eID_id) + " - " + str(self.vID.vName)
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Relationships between users and main entity sets.
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 class Fav_Event(models.Model):
     uID = models.ForeignKey(User, verbose_name = u'User ID')
@@ -123,14 +123,14 @@ class Fav_Venue(models.Model):
     def __unicode__(self):
         return str(self.uID.username) + " - " + str(self.vID.vName)
 
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # Keeps track of when the database was last updated.
-#-------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 
 class Last_Updated(models.Model):
     date = models.DateField()
     updateCount = models.IntegerField('Update count')
-    
+
     class Meta:
         verbose_name_plural = 'Last_Updated'
 
