@@ -14,9 +14,10 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'HOST': '/cloudsql/top-branch-860:musicon',
+            'HOST': '/cloudsql/musicon-1210:musicon',
             'NAME': 'musicon',
             'USER': 'root',
+            'PASSWORD': 'rock',
         }
     }
 elif os.getenv('SETTINGS_MODE') == 'prod':
@@ -24,10 +25,11 @@ elif os.getenv('SETTINGS_MODE') == 'prod':
     # in production.
     DATABASES = {
         'default': {
-            'ENGINE': 'google.appengine.ext.django.backends.rdbms',
-            'INSTANCE': 'top-branch-860:musicon',
+            'ENGINE': 'django.db.backends.mysql',
+            'HOST': '173.194.106.138',
             'NAME': 'musicon',
             'USER': 'root',
+            'PASSWORD': 'rock',
         }
     }
 else:
@@ -35,10 +37,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
+            'HOST': '127.0.0.1',
+            'PORT': '8889',
             'NAME': 'musicon',
             'USER': 'root',
-            'PASSWORD': '',
-            'TEST_MIRROR': 'default'
+            'PASSWORD': 'root',
         }
     }
 
