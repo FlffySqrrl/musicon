@@ -3,33 +3,68 @@ from django.contrib import admin
 from forms import *
 from models import *
 
-class Has_ArtistInline(admin.StackedInline):
-    """
-    Includes Has_Artist as a required in-line form.
-    """
-    model = Has_Artist
+# ------------------------------------------------------------------------------
+# INTERFACE CUSTOMIZATIONS
+# ------------------------------------------------------------------------------
+
+class HasArtistInline(admin.StackedInline):
+    '''
+    Creates HasArtist as a required in-line form.
+    '''
+    model = HasArtist
     extra = 1
     formset = RequiredInlineFormSet
 
-class Has_VenueInline(admin.StackedInline):
-    """
-    Includes Has_Venue as a required in-line form.
-    """
-    model = Has_Venue
+class HasVenueInline(admin.StackedInline):
+    '''
+    Creates HasVenue as a required in-line form.
+    '''
+    model = HasVenue
     max_num = 1
     formset = RequiredInlineFormSet
 
 class EventAdmin(admin.ModelAdmin):
-    """
-    Options for the add event form.
-    """
-    inlines = [Has_ArtistInline, Has_VenueInline]
+    model = Event
+    inlines = [HasArtistInline, HasVenueInline]
+    list_display = ['event_id', 'event_type', 'event_name', 'start_date', 'start_time']
+
+class ArtistAdmin(admin.ModelAdmin):
+    model = Artist
+    list_display = ['artist_id', 'artist_name']
+
+class VenueAdmin(admin.ModelAdmin):
+    model = Venue
+    list_display = ['venue_id', 'venue_name', 'city']
+
+class HasArtistAdmin(admin.ModelAdmin):
+    model = HasArtist
+    list_display = ['event_id', 'artist_id', 'artist_order']
+
+class HasVenueAdmin(admin.ModelAdmin):
+    model = HasVenue
+    list_display = ['event_id', 'venue_id']
+
+class FavEventAdmin(admin.ModelAdmin):
+    model = FavEvent
+    list_display = ['user_id', 'event_id']
+
+class FavVenueAdmin(admin.ModelAdmin):
+    model = FavVenue
+    list_display = ['user_id', 'venue_id']
+
+class LastUpdatedAdmin(admin.ModelAdmin):
+    model = LastUpdated
+    list_display = ['date', 'count']
+
+# ------------------------------------------------------------------------------
+# ADMIN INCLUSIONS
+# ------------------------------------------------------------------------------
 
 admin.site.register(Event, EventAdmin)
-admin.site.register(Artist)
-admin.site.register(Venue)
-admin.site.register(Has_Artist)
-admin.site.register(Has_Venue)
-admin.site.register(Fav_Event)
-admin.site.register(Fav_Venue)
-admin.site.register(Last_Updated)
+admin.site.register(Artist, ArtistAdmin)
+admin.site.register(Venue, VenueAdmin)
+admin.site.register(HasArtist, HasArtistAdmin)
+admin.site.register(HasVenue, HasVenueAdmin)
+admin.site.register(FavEvent, FavEventAdmin)
+admin.site.register(FavVenue, FavVenueAdmin)
+admin.site.register(LastUpdated, LastUpdatedAdmin)
