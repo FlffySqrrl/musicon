@@ -66,7 +66,9 @@ $(document).ready(function() {
         });
         google.maps.event.addDomListener(window, "load", initMap(LAT, LNG));
 
-        // Plots the map every time the page is loaded.
+        /**
+         * Plots the map every time the page is loaded.
+         */
         function initMap(lat, lng) {
             var mapSettings = {
                 zoom      : INITIAL_ZOOM,
@@ -83,7 +85,9 @@ $(document).ready(function() {
             mapVenues.length = 0;
         }
 
-        // Puts markers on the map.
+        /**
+         * Puts markers on the map.
+         */
         function createMarkers() {
             for (var i = 0; i < mapEvents.length; ++i) {
                 var lat = mapVenues[i][1];
@@ -118,9 +122,11 @@ $(document).ready(function() {
             }
         }
 
-        // Zooms the map in to where the marker is.
-        // Displays event_name in event_form.
-        // Displays lat and lng in venue_form.
+        /**
+         * Zooms the map in to where the marker is.
+         * Displays event_name in event_form.
+         * Displays lat and lng in venue_form.
+         */
         function setClickEvent(marker) {
             google.maps.event.addListener(marker, "click", function() {
                 var markerContent = marker.content.replace("&#39;", "'");
@@ -136,13 +142,17 @@ $(document).ready(function() {
             });
         }
 
-        // Checks whether or not infoWindow is enabled.
+        /**
+         * Checks whether or not infoWindow is enabled.
+         */
         function isInfoWindowOpen(infoWindow) {
             var map = infoWindow.getMap();
             return (map !== null && typeof map !== "undefined");
         }
 
-        // Enables infoWindow when a marker is clicked on.
+        /**
+         * Enables infoWindow when a marker is clicked on.
+         */
         function initInfoWindow(markerContent, markerPosition) {
             if (isInfoWindowOpen(infoWindow)) {
                 infoWindow.close();

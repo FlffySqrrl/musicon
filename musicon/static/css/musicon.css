@@ -3,8 +3,9 @@
 /* -------------------------------------------------------------------------- */
 
 * {
-    color: #3a3a3a;
     font-family: "Roboto", Helvetica, sans-serif;
+
+    color: #3a3a3a;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -24,19 +25,19 @@
 /* -------------------------------------------------------------------------- */
 
 .glowable:focus {
-    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.075) inset, 0 0 6px #f80046;
     border-color: #f80046;
     outline: none;
+    box-shadow: 0 0 0 rgba(0, 0, 0, .075) inset, 0 0 6px #f80046;
 }
 
 .dropdown-black li a:hover {
-    background-color: #3a3a3a;
     color: white;
+    background-color: #3a3a3a;
 }
 
 .dropdown-pink li a:hover {
-    background-color: #f80046;
     color: white;
+    background-color: #f80046;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -44,15 +45,15 @@
 /* -------------------------------------------------------------------------- */
 
 .navbar {
-    margin: 0px;
+    margin: 0;
 }
 
 #city-menu-btn,
 #city-menu-btn:hover,
 #city-menu-btn:focus {
-    background-color: #3a3a3a;
-    border-color: #3a3a3a;
     color: white;
+    border-color: #3a3a3a;
+    background-color: #3a3a3a;
 }
 
 #by-menu-label {
@@ -78,16 +79,16 @@
     margin-top: 10px;
 }
 
+.navbar-right {
+    margin-right: 5px;
+}
+
 #signup-btn,
 #signup-btn:hover
 #signup-btn:focus {
-    background-color: #f80046;
-    border-color: #f80046;
     color: white;
-}
-
-.navbar-right {
-    margin-right: 5px;
+    border-color: #f80046;
+    background-color: #f80046;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -114,24 +115,28 @@ table * {
 
 tbody {
     overflow-y: auto;
+
     height: 590px;
 }
 
 th,
 td {
     float: left;
+
     width: 25%;
 }
 
 th {
     height: 30px;
+
     text-align: left;
 }
 
 tr:after {
-    clear: both;
     display: block;
-    content: ' ';
+    clear: both;
+
+    content: " ";
 }
 
 .listing-date {
@@ -157,11 +162,12 @@ tr:after {
 .songkick-icon {
     width: 16px;
     height: 16px;
+
     border: 0;
 }
 
 /* -------------------------------------------------------------------------- */
-/* ACCOUNT PAGES
+/* USER PAGES
 /* -------------------------------------------------------------------------- */
 
 .page-header {
@@ -173,7 +179,7 @@ tr:after {
 }
 
 /* -------------------------------------------------------------------------- */
-/* DEFAULTS
+/* COMMON
 /* -------------------------------------------------------------------------- */
 
 a {
