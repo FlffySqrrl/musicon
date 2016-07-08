@@ -24,22 +24,53 @@ a:hover {
 }
 
 /* -------------------------------------------------------------------------- */
-/* NAVBAR
+/* NAVBAR LEFT
 /* -------------------------------------------------------------------------- */
 
-.dropdown-menu li a:hover {
-    color: white;
-    background-color: #f80046;
+#city-btn {
+    border-color: #3a3a3a;
 }
 
-#user-menu,
-#signin-btn {
-    margin-right: 5px;
+#city-btn,
+#city-menu li a:hover {
+    color: white;
+    background-color: #3a3a3a;
 }
+
+/* -------------------------------------------------------------------------- */
+/* NAVBAR SEARCH
+/* -------------------------------------------------------------------------- */
+
+#by-btn {
+    max-width: 85px;
+    min-width: 85px;
+}
+
+#by-select {
+    display: none;
+}
+
+#search-msg {
+    margin-left: 5px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* NAVBAR RIGHT
+/* -------------------------------------------------------------------------- */
 
 #signup-btn {
     border-color: #f80046;
 
+    color: white;
+    background-color: #f80046;
+}
+
+#signin-btn,
+#user-btn {
+    margin-right: 5px;
+}
+
+#user-menu li a:hover {
     color: white;
     background-color: #f80046;
 }
@@ -52,8 +83,14 @@ a:hover {
     text-align: center;
 }
 
-div input {
+.account-input {
     width: 100%;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #f80046;
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.075) inset, 0 0 6px #f80046;
 }
 
 /* -------------------------------------------------------------------------- */

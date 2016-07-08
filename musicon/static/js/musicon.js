@@ -8,7 +8,28 @@ var mapVenues = [];
 
 $(document).ready(function() {
 
-    $('[data-toggle="tooltip"]').tooltip();
+    // Enable tooltips.
+    $("[data-toggle='tooltip']").tooltip();
+
+    // -------------------------------------------------------------------------
+    // SEARCH FUNCTIONS
+    // -------------------------------------------------------------------------
+
+    // Convert select into a dropdown menu.
+    $("#by-menu li a").click(function() {
+        $("#by-btn").html($(this).html());
+        $("#by-select option").prop("selected", false)
+                              .filter("[value=" + $("#by-btn").html().toLowerCase() + "]")
+                              .prop("selected", true);
+    });
+
+    // Submit search form on enter.
+    $("input[name='q']").keydown(function(e) {
+        if (e.keyCode == 13) {
+            e.preventDefault();
+            $("#search-submit").click();
+        }
+    });
 
     // -------------------------------------------------------------------------
     // MAP FUNCTIONS

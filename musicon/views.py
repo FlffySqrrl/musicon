@@ -64,8 +64,8 @@ def search(request):
         pop = request.GET['pop']
 
     # Display all events if no search type was selected.
-    if not by:
-        return events(request)
+    # if not q:
+    #     return events(request)
 
     # Get all upcoming events.
     upcoming = Event.objects.filter(start_date__gte=datetime.date.today)
@@ -95,6 +95,29 @@ def search(request):
                 has_venue = list(HasVenue.objects.filter(venue_id=id))
                 for hv in has_venue:
                     event_ids.append(hv.event_id_id)
+        elif not by:
+            artist_ids = []
+            artists = list(Artist.objects.filter(artist_name__icontains=q))
+            for a in artists:
+                artist_ids.append(a.artist_id)
+            for id in artist_ids:
+                has_artist = list(HasArtist.objects.filter(artist_id=id))
+                for ha in has_artist:
+                    event_ids.append(ha.event_id_id)
+            venue_ids = []
+            venues = list(Venue.objects.filter(venue_name__icontains=q))
+            for v in venues:
+                venue_ids.append(v.venue_id)
+            for id in venue_ids:
+                has_venue = list(HasVenue.objects.filter(venue_id=id))
+                for hv in has_venue:
+                    if hv.event_id_id not in event_ids:
+                        event_ids.append(hv.event_id_id)
+            upcoming = list(upcoming.filter(event_name__icontains=q))
+            for e in upcoming:
+                if e.event_id not in event_ids:
+                    event_ids.append(e.event_id)
+
 
     # Filter events by date(s).
     if start and end:
@@ -120,6 +143,7 @@ def search(request):
     context['q'] = q
     context['start'] = start
     context['end'] = end
+    context['count'] = len(event_ids)
     return render(request, 'events.html', context)
 
 # ------------------------------------------------------------------------------

@@ -8,6 +8,9 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <!-- ICON -->
+        <link rel="shortcut icon" href="{% static 'img/musicon.png' %}">
+
         <!-- CSS -->
         <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
         <link rel="stylesheet" href="{% static 'css/musicon.css' %}" />
@@ -20,20 +23,63 @@
                     <a class="navbar-brand" href="/">
                         <span class="songkick-black">Music</span><span class="songkick-pink">On</span>
                     </a>
-                </div> <!-- /.navbar-header -->
+                </div>
 
-                <ul class="nav navbar-nav navbar-right">
+                <div class="nav navbar-nav navbar-left">
+                    <div class="dropdown">
+                        <button class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown" id="city-btn">Vancouver</button>
+                        <ul class="dropdown-menu" id="city-menu" role="menu">
+                            <li><a href="#">City 1</a></li>
+                            <li><a href="#">City 2</a></li>
+                            <li><a href="#">City 3</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <form class="nav navbar-nav navbar-form navbar-left" role="search" action="/search/" method="GET">
+                    <div class="form-group dropdown">
+                        <div class="btn-group">
+                            <button class="btn btn-default" id="by-btn" type="button">Search By</button>
+                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" id="by-menu" role="menu">
+                                <li><a>Artist</a></li>
+                                <li><a>Venue</a></li>
+                            </ul>
+                        </div>
+                        <select id="by-select" name="by">
+                            <option></option>
+                            <option value="artist"></option>
+                            <option value="venue"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control" type="text" name="q" placeholder="Search" required />
+                    </div>
+                    <div class="form-group">
+                        <input class="btn btn-default" id="search-submit" type="submit" value="Search" />
+                    </div>
+                    {% if count %}
+                        <div class="form-group" id="search-msg">
+                            <label class="control-label">Found {{ count }} events</label>
+                        </div>
+                    {% endif %}
+                </form>
+
+                <div class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
                         <div class="dropdown">
-                            <div class="btn-group" id="user-menu">
+                            <div class="btn-group" id="user-btn">
                                 <button class="btn btn-default navbar-btn">
-                                    <b><span class="songkick-pink">{{ user.first_name }}</span></b>
+                                    <b><span class="songkick-pink">{{ user.first_name }} {{ user.last_name }}</span></b>
                                 </button>
                                 <button class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
-                                    <span class="sr-only">User Menu</span>
                                     <span class="caret"></span>
                                 </button>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu" id="user-menu" role="menu">
+                                    <li><a href="#">Profile</a></li>
+                                    <li class="divider" role="separator"></li>
                                     <li><a href="/myevents/">My Events</a></li>
                                     <li><a href="/myvenues/">My Venues</a></li>
                                     <li class="divider" role="separator"></li>
@@ -49,8 +95,8 @@
                             <button class="btn btn-default navbar-btn" id="signin-btn">Sign in</button>
                         </a>
                     {% endif %}
-                </ul>
-            </div> <!-- /.container-fluid -->
+                </div>
+            </div>
         </nav>
     </body>
 
