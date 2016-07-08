@@ -10,8 +10,9 @@ var LAT = cities["vancouver"]["lat"];
 var LNG = cities["vancouver"]["lng"];
 
 // Global variables
-var mapEvents = [];
-var mapVenues = [];
+var mapEvents  = [];
+var mapVenues  = [];
+var mapMarkers = [];
 
 $(document).ready(function() {
 
@@ -60,9 +61,8 @@ $(document).ready(function() {
 
         // Initialize the map.
         var map;
-        var mapMarkers = [];
         var infoWindow = new google.maps.InfoWindow({
-            pixelOffset : new google.maps.Size(0, -25)
+            pixelOffset : new google.maps.Size(0, -25),
         });
         google.maps.event.addDomListener(window, "load", initMap(LAT, LNG));
 
@@ -73,7 +73,7 @@ $(document).ready(function() {
             var mapSettings = {
                 zoom      : INITIAL_ZOOM,
                 center    : new google.maps.LatLng(lat, lng),
-                mapTypeId : google.maps.MapTypeId.ROADMAP
+                mapTypeId : google.maps.MapTypeId.ROADMAP,
             };
             map = new google.maps.Map(document.getElementById("map"), mapSettings);
 
@@ -81,8 +81,9 @@ $(document).ready(function() {
             getVenues();
             createMarkers();
 
-            mapEvents.length = 0;
-            mapVenues.length = 0;
+            mapEvents  = [];
+            mapVenues  = [];
+            mapMarkers = [];
         }
 
         /**
@@ -115,7 +116,8 @@ $(document).ready(function() {
                     map       : map,
                     content   : content,
                     position  : new google.maps.LatLng(lat, lng),
-                    animation : google.maps.Animation.DROP
+                    animation : google.maps.Animation.DROP,
+                    eventId   : mapEvents[i]["id"],
                 });
                 mapMarkers.push(thisMarker);
                 setClickEvent(thisMarker);
@@ -123,18 +125,22 @@ $(document).ready(function() {
         }
 
         /**
-         * Zooms the map in to where the marker is.
-         * Displays event_name in event_form.
-         * Displays lat and lng in venue_form.
+         * Sets what happens when a marker is clicked on.
          */
         function setClickEvent(marker) {
             google.maps.event.addListener(marker, "click", function() {
                 var markerContent = marker.content.replace("&#39;", "'");
                 var markerPosition = marker.getPosition();
 
+                // Zoom the map in to the marker.
                 map.setCenter(markerPosition);
                 map.setZoom(CLICKED_ZOOM);
                 initInfoWindow(markerContent, markerPosition);
+
+                // Scroll to and highlight corresponding row on the table.
+                var eventRow = "#" + marker["eventId"];
+                $("tbody").scrollTo(eventRow, { duration : 500 });
+                $(eventRow).effect("highlight", { color : "#ff467a" }, 2000);
 
                 // document.getElementById("id_lat").value = markerPosition.lat();
                 // document.getElementById("id_lng").value = markerPosition.lng();
@@ -151,7 +157,8 @@ $(document).ready(function() {
         }
 
         /**
-         * Enables infoWindow when a marker is clicked on.
+         * Enables infoWindow when a marker is clicked on and closes any
+         * currently open ones.
          */
         function initInfoWindow(markerContent, markerPosition) {
             if (isInfoWindowOpen(infoWindow)) {

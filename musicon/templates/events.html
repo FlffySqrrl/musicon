@@ -24,7 +24,7 @@
                     </thead>
                     <tbody>
                         {% for id in e_ids %}
-                            <tr>
+                            <tr id={{ id }}>
                                 <td class="listing-date">
                                     {{ e_dates|get_value:id }}
                                 </td>
@@ -72,6 +72,7 @@
 <script>
 function getEvents() {
     var thisEvent;
+    var thisId;
     var thisType;
     var thisDate;
     var thisTime;
@@ -79,6 +80,7 @@ function getEvents() {
     var thisVenue;
 
     "{% for id in e_ids %}"
+        thisId   = "{{ id }}"
         thisType = "{{ e_types|get_value:id }}";
         thisDate = "{{ e_dates|get_value:id }}";
         "{% if not e_times|get_value:id == None %}"
@@ -96,11 +98,12 @@ function getEvents() {
         "{% endif %}"
 
         thisEvent = {
+            id     : thisId,
             type   : thisType,
             date   : thisDate,
             time   : thisTime,
             lineup : thisLineup,
-            venue  : thisVenue
+            venue  : thisVenue,
         };
         mapEvents.push(thisEvent);
     "{% endfor %}"
