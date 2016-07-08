@@ -54,16 +54,6 @@ class Venue(models.Model):
     def __unicode__(self):
         return self.venue_name
 
-class EventForm(ModelForm):
-    class Meta:
-        model = Event
-        fields = ['event_name']
-
-class VenueForm(ModelForm):
-    class Meta:
-        model = Venue
-        fields = ['lat', 'lng']
-
 # ------------------------------------------------------------------------------
 # MAIN-MAIN RELATIONSHIP SETS
 # ------------------------------------------------------------------------------
