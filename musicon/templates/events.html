@@ -67,57 +67,57 @@
             </div>
         </div>
     {% endblock %}
+
+    <script>
+    function getEvents() {
+        var thisEvent;
+        var thisId;
+        var thisType;
+        var thisDate;
+        var thisTime;
+        var thisLineup;
+        var thisVenue;
+
+        "{% for id in e_ids %}"
+            thisId   = "{{ id }}"
+            thisType = "{{ e_types|get_value:id }}";
+            thisDate = "{{ e_dates|get_value:id }}";
+            "{% if not e_times|get_value:id == None %}"
+                thisTime = "{{ e_times|get_value:id }}";
+            "{% endif %}"
+            thisLineup = [];
+            "{% for headliner in e_artists|get_value:id|slice:'0:1' %}"
+                thisLineup.push("{{ headliner }}");
+            "{% endfor %}"
+            "{% for support in e_artists|get_value:id|slice:'1:' %}"
+                thisLineup.push("{{ support }}");
+            "{% endfor %}"
+            "{% if not e_venue|get_value:id == None %}"
+                thisVenue = "{{ e_venues|get_value:id }}";
+            "{% endif %}"
+
+            thisEvent = {
+                id     : thisId,
+                type   : thisType,
+                date   : thisDate,
+                time   : thisTime,
+                lineup : thisLineup,
+                venue  : thisVenue,
+            };
+            mapEvents.push(thisEvent);
+        "{% endfor %}"
+    }
+
+    function getVenues() {
+        var thisVenue;
+
+        "{% for v in venues %}"
+            thisVenue = [];
+            thisVenue.push("{{ v.venue_name }}");
+            thisVenue.push("{{ v.lat }}");
+            thisVenue.push("{{ v.lng }}");
+            mapVenues.push(thisVenue);
+        "{% endfor %}"
+    }
+    </script>
 </body>
-
-<script>
-function getEvents() {
-    var thisEvent;
-    var thisId;
-    var thisType;
-    var thisDate;
-    var thisTime;
-    var thisLineup;
-    var thisVenue;
-
-    "{% for id in e_ids %}"
-        thisId   = "{{ id }}"
-        thisType = "{{ e_types|get_value:id }}";
-        thisDate = "{{ e_dates|get_value:id }}";
-        "{% if not e_times|get_value:id == None %}"
-            thisTime = "{{ e_times|get_value:id }}";
-        "{% endif %}"
-        thisLineup = [];
-        "{% for headliner in e_artists|get_value:id|slice:'0:1' %}"
-            thisLineup.push("{{ headliner }}");
-        "{% endfor %}"
-        "{% for support in e_artists|get_value:id|slice:'1:' %}"
-            thisLineup.push("{{ support }}");
-        "{% endfor %}"
-        "{% if not e_venue|get_value:id == None %}"
-            thisVenue = "{{ e_venues|get_value:id }}";
-        "{% endif %}"
-
-        thisEvent = {
-            id     : thisId,
-            type   : thisType,
-            date   : thisDate,
-            time   : thisTime,
-            lineup : thisLineup,
-            venue  : thisVenue,
-        };
-        mapEvents.push(thisEvent);
-    "{% endfor %}"
-}
-
-function getVenues() {
-    var thisVenue;
-
-    "{% for v in venues %}"
-        thisVenue = [];
-        thisVenue.push("{{ v.venue_name }}");
-        thisVenue.push("{{ v.lat }}");
-        thisVenue.push("{{ v.lng }}");
-        mapVenues.push(thisVenue);
-    "{% endfor %}"
-}
-</script>
