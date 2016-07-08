@@ -4,7 +4,7 @@ from django.db import models
 from django.forms import ModelForm
 
 # ------------------------------------------------------------------------------
-# Main entity sets.
+# MAIN ENTITY SETS
 # ------------------------------------------------------------------------------
 
 class Event(models.Model):
@@ -12,127 +12,126 @@ class Event(models.Model):
         ('Concert', 'Concert'),
         ('Festival', 'Festival'),
     )
-    eID = models.IntegerField('Event ID', primary_key = True)
-    eName = models.CharField('Event name', max_length = 200, null = True)
-    eType = models.CharField('Event type', choices = EVENT_TYPES, max_length = 20, null = True)
-    eUrl = models.CharField('Songkick page', max_length = 200, null = True)
-    startDate = models.DateField('Date', null = True)
-    startTime = models.CharField('Time', max_length = 10, null = True)
-    popularity = models.FloatField(null = True, blank = True)
-    status = models.CharField(max_length = 100, null = True, blank = True)
-    ageRestriction = models.CharField('Age restriction', max_length = 100, null = True, blank = True)
+
+    event_id   = models.IntegerField('Event ID', primary_key=True)
+    event_name = models.CharField('Event Name', max_length=200, null=True)
+    event_type = models.CharField('Event Type', max_length=10, null=True, choices=EVENT_TYPES)
+    event_url  = models.CharField('Event URL', max_length=200, null=True, blank=True)
+    start_date = models.DateField('Start Date', null=True)
+    start_time = models.CharField('Start Time', max_length=10, null=True)
+    status     = models.CharField('Status', max_length=100, null=True, blank=True)
+    popularity = models.FloatField('Popularity', null=True, blank=True)
+    age_limit  = models.CharField('Age Limit', max_length=100, null=True, blank=True)
 
     class Meta:
-        ordering = ['startDate']
+        ordering = ['start_date', 'start_time']
 
     def __unicode__(self):
-        return self.eName
+        return self.event_name
+
+class Artist(models.Model):
+    artist_id   = models.IntegerField('Artist ID', primary_key=True)
+    artist_name = models.CharField('Artist Name', max_length=100, null=True)
+    artist_url  = models.CharField('Artist URL', max_length=200, null=True, blank=True)
+
+    class Meta:
+        ordering = ['artist_name']
+
+    def __unicode__(self):
+        return self.artist_name
+
+class Venue(models.Model):
+    venue_id   = models.IntegerField('Venue ID', primary_key=True)
+    venue_name = models.CharField('Venue Name', max_length=100, null=True)
+    venue_url  = models.CharField('Venue URL', max_length=200, null=True, blank=True)
+    city       = models.CharField('City', max_length=100, null=True)
+    lat        = models.FloatField('Latitude', null=True)
+    lng        = models.FloatField('Longitude', null=True)
+
+    class Meta:
+        ordering = ['venue_name']
+
+    def __unicode__(self):
+        return self.venue_name
 
 class EventForm(ModelForm):
     class Meta:
         model = Event
-        fields = ['eName']
-
-class Artist(models.Model):
-    aID = models.IntegerField('Artist ID', primary_key = True)
-    aName = models.CharField('Artist name', max_length = 100, null = True)
-    aUrl = models.CharField('Songkick page', max_length = 200, null = True, blank = True)
-
-    class Meta:
-        ordering = ['aName']
-
-    def __unicode__(self):
-        return self.aName
-
-class Venue(models.Model):
-    vID = models.IntegerField('Venue ID', primary_key = True)
-    vName = models.CharField('Venue name', max_length = 100, null = True)
-    city = models.CharField(max_length = 100, null = True, blank = True)
-    lat = models.FloatField('Latitude', null = True)
-    lon = models.FloatField('Longitude', null = True)
-
-    class Meta:
-        ordering = ['vName']
-
-    def __unicode__(self):
-        return self.vName
+        fields = ['event_name']
 
 class VenueForm(ModelForm):
     class Meta:
         model = Venue
-        fields = ['lat', 'lon']
+        fields = ['lat', 'lng']
 
 # ------------------------------------------------------------------------------
-# Relationships between main entity sets.
+# MAIN-MAIN RELATIONSHIP SETS
 # ------------------------------------------------------------------------------
 
-class Has_Artist(models.Model):
-    ARTIST_TYPES = (
-        ('headline', 'headline'),
-        ('support', 'support'),
-    )
-    eID = models.ForeignKey(Event, verbose_name = u'Event ID')
-    aID = models.ForeignKey(Artist, verbose_name = u'Artist ID')
-    aType = models.CharField('Artist type', choices = ARTIST_TYPES, max_length = 20, null = True)
+class HasArtist(models.Model):
+    event_id     = models.ForeignKey(Event, verbose_name='Event')
+    artist_id    = models.ForeignKey(Artist, verbose_name='Artist')
+    artist_order = models.IntegerField('Performance Order')
 
     class Meta:
-        ordering = ['eID']
-        unique_together = ('eID', 'aID',)
-        verbose_name_plural = 'Has_Artist'
+        ordering = ['event_id', 'artist_order']
+        unique_together = ('event_id', 'artist_id')
+        verbose_name_plural = 'HasArtist'
 
     def __unicode__(self):
-        return str(self.eID_id) + " - " + str(self.aID.aName) + " - " + str(self.aType)
+        return 'Event ' + str(self.event_id_id) + ' - #' + str(self.artist_order) + ' ' + str(self.artist_id.artist_name)
 
-class Has_Venue(models.Model):
-    eID = models.ForeignKey(Event, verbose_name = u'Event ID')
-    vID = models.ForeignKey(Venue, verbose_name = u'Venue ID')
+class HasVenue(models.Model):
+    event_id = models.ForeignKey(Event, verbose_name='Event')
+    venue_id = models.ForeignKey(Venue, verbose_name='Venue')
 
     class Meta:
-        ordering = ['eID']
-        unique_together = ('eID', 'vID',)
-        verbose_name_plural = 'Has_Venue'
+        ordering = ['event_id']
+        unique_together = ('event_id', 'venue_id')
+        verbose_name_plural = 'HasVenue'
 
     def __unicode__(self):
-        return str(self.eID_id) + " - " + str(self.vID.vName)
+        return 'Event ' + str(self.event_id_id) + ' at ' + str(self.venue_id.venue_name)
 
 # ------------------------------------------------------------------------------
-# Relationships between users and main entity sets.
+# USER-MAIN RELATIONSHIP SETS
 # ------------------------------------------------------------------------------
 
-class Fav_Event(models.Model):
-    uID = models.ForeignKey(User, verbose_name = u'User ID')
-    eID = models.ForeignKey(Event, verbose_name = u'Event ID')
+class FavEvent(models.Model):
+    user_id  = models.ForeignKey(User, verbose_name='User')
+    event_id = models.ForeignKey(Event, verbose_name='Event')
 
     class Meta:
-        ordering = ['uID']
-        unique_together = ('uID', 'eID',)
-        verbose_name_plural = 'Fav_Events'
+        ordering = ['user_id']
+        unique_together = ('user_id', 'event_id')
+        verbose_name_plural = 'FavEvents'
 
     def __unicode__(self):
-        return str(self.uID.username) + " - " + str(self.eID_id)
+        return str(self.user_id.username) + ' - ' + str(self.event_id.event_name)
 
-class Fav_Venue(models.Model):
-    uID = models.ForeignKey(User, verbose_name = u'User ID')
-    vID = models.ForeignKey(Venue, verbose_name = u'Venue ID')
+class FavVenue(models.Model):
+    user_id  = models.ForeignKey(User, verbose_name='User')
+    venue_id = models.ForeignKey(Venue, verbose_name='Venue')
 
     class Meta:
-        ordering = ['uID']
-        unique_together = ('uID', 'vID',)
-        verbose_name_plural = 'Fav_Venues'
+        ordering = ['user_id']
+        unique_together = ('user_id', 'venue_id')
+        verbose_name_plural = 'FavVenues'
 
     def __unicode__(self):
-        return str(self.uID.username) + " - " + str(self.vID.vName)
+        return str(self.user_id.username) + ' - ' + str(self.venue_id.venue_name)
 
 # ------------------------------------------------------------------------------
-# Keeps track of when the database was last updated.
+# LAST UPDATED
 # ------------------------------------------------------------------------------
 
-class Last_Updated(models.Model):
-    date = models.DateField()
-    updateCount = models.IntegerField('Update count')
+class LastUpdated(models.Model):
+    date  = models.DateField()
+    count = models.IntegerField('Update Count')
 
     class Meta:
-        verbose_name_plural = 'Last_Updated'
+        ordering = ['date']
+        verbose_name_plural = 'LastUpdated'
 
     def __unicode__(self):
-        return u'%s' % self.date
+        return str(self.count) + ' updates on ' + str(self.date)
