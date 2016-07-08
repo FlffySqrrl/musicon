@@ -20,37 +20,36 @@
                     <a class="navbar-brand" href="/">
                         <span class="songkick-black">Music</span><span class="songkick-pink">On</span>
                     </a>
-
-                    <button class="navbar-toggle" data-toggle="collapse" data-target="#user-links">
-                        <span class="sr-only">Toggle Navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
                 </div> <!-- /.navbar-header -->
 
-                <div class="collapse navbar-collapse" id="user-links">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="/accounts/register/">Register</a>
-                        </li>
-
-                        <li>
-                            {% if user.is_authenticated %}
-                                <a href="/accounts/logout/">Log Out</a>
-                            {% endif %}
-                            {% if not user.is_authenticated %}
-                                <a href="/accounts/login/">Log In</a>
-                            {% endif %}
-                        </li>
-
-                        <li>
-                            {% if user.username %}
-                                <a><b>{{ user.username }}</b></a>
-                            {% endif %}
-                        </li>
-                    </ul>
-                </div> <!-- /.navbar-collapse -->
+                <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <div class="btn-group" id="user-menu">
+                                <button class="btn btn-default navbar-btn">
+                                    <b><span class="songkick-pink">{{ user.first_name }}</span></b>
+                                </button>
+                                <button class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
+                                    <span class="sr-only">User Menu</span>
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="/myevents/">My Events</a></li>
+                                    <li><a href="/myvenues/">My Venues</a></li>
+                                    <li class="divider" role="separator"></li>
+                                    <li><a href="/accounts/signout/">Sign out</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="/accounts/signup/">
+                            <button class="btn btn-default navbar-btn" id="signup-btn">Sign up</button>
+                        </a>
+                        <a href="/accounts/signin/">
+                            <button class="btn btn-default navbar-btn" id="signin-btn">Sign in</button>
+                        </a>
+                    {% endif %}
+                </ul>
             </div> <!-- /.container-fluid -->
         </nav>
     </body>
@@ -60,5 +59,7 @@
 </html>
 
 <!-- JS -->
+<script src="http://maps.googleapis.com/maps/api/js"></script>
 <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
 <script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/musicon.js' %}"></script>

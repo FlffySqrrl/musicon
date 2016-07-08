@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Sign Up</h1>
+        {% if error %}
+            <p class="songkick-pink">Some fields are invalid, please try again.</p>
+        {% endif %}
+    </div>
+
+    <div class="container">
+        <div class="col-md-5 col-md-offset-3">
+            <form class="form-horizontal" action="/accounts/signup/" method="POST">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="username">Username</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="username" data-toggle="tooltip" data-placement="right" title="30 or less characters" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="first_name">First Name</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="first_name" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="last_name">Last Name</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="text" name="last_name" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="email">Email</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="email" name="email" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="password1">Password</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="password" name="password1" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-4" for="password2">Confirm Password</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" type="password" name="password2" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-3 col-sm-offset-9">
+                        <input class="btn btn-default" type="submit" value="Sign up" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}

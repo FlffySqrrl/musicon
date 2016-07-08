@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, render_to_response
 from django.template import Context, loader, RequestContext
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_protect
 
 from forms import *
 from models import *
@@ -287,50 +288,35 @@ def collect_events(events):
 # AUTHENTICATION SYSTEM
 # ------------------------------------------------------------------------------
 
-def auth_view(request):
-
-    # Get username, return '' if there is no valid data.
-    username = request.POST.get('username', '')
-    password = request.POST.get('password', '')
-    user = auth.authenticate(username=username, password=password)
-
-    if user:
-        auth.login(request, user)
-        return HttpResponseRedirect('/accounts/loggedin')
-    else:
-        return HttpResponseRedirect('/accounts/invalid_login')
-
-def login(request):
-    c = {}
-    c.update(csrf(request))
-    return render_to_response('login.html', c)
-
-def invalid_login(request):
-    return render_to_response('invalid_login.html')
-
-def loggedin(request):
-    c = {}
-    c.update(csrf(request))
-    c['username'] = request.user.username
-    test = request.POST.get('title', '')
-    return HttpResponseRedirect('/')
-
-def logout(request):
-    auth.logout(request)
-    return render_to_response('logout.html')
-
-def register_user(request):
+@csrf_protect
+def signup(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/accounts/register_success')
+            return render(request, 'signup_success.html')
         else:
-            return render_to_response('register.html', { 'form' : form })
-    args = {}
-    args.update(csrf(request))
-    args['form'] = RegistrationForm()
-    return render(request, 'register.html', args)
+            return render(request, 'signup.html', { 'error' : True })
+    return render(request, 'signup.html')
 
-def register_success(request):
-    return render_to_response('register_success.html')
+@csrf_protect
+def signin(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/')
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = auth.authenticate(username=username, password=password)
+        if user:
+            auth.login(request, user)
+            return HttpResponseRedirect('/')
+        else:
+            return render(request, 'signin.html', { 'error' : True })
+    return render(request, 'signin.html')
+
+@csrf_protect
+def signout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/')

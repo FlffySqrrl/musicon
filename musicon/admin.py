@@ -1,11 +1,23 @@
 from django.contrib import admin
+from django.forms.models import BaseInlineFormSet
 
-from forms import *
 from models import *
 
 # ------------------------------------------------------------------------------
-# INTERFACE CUSTOMIZATIONS
+# FORM CUSTOMIZATIONS
 # ------------------------------------------------------------------------------
+
+class RequiredInlineFormSet(BaseInlineFormSet):
+    '''
+    Generates a required in-line form.
+    '''
+    def _construct_form(self, i, **kwargs):
+        '''
+        Overrides the method to set empty_permitted to False.
+        '''
+        form = super(RequiredInlineFormSet, self)._construct_form(i, **kwargs)
+        form.empty_permitted = False
+        return form
 
 class HasArtistInline(admin.StackedInline):
     '''
@@ -22,6 +34,10 @@ class HasVenueInline(admin.StackedInline):
     model = HasVenue
     max_num = 1
     formset = RequiredInlineFormSet
+
+# ------------------------------------------------------------------------------
+# LIST CUSTOMIZATIONS
+# ------------------------------------------------------------------------------
 
 class EventAdmin(admin.ModelAdmin):
     model = Event
@@ -57,7 +73,7 @@ class UpdateAdmin(admin.ModelAdmin):
     list_display = ['date', 'note']
 
 # ------------------------------------------------------------------------------
-# ADMIN INCLUSIONS
+# APPLY CUSTOMIZATIONS
 # ------------------------------------------------------------------------------
 
 admin.site.register(Event, EventAdmin)

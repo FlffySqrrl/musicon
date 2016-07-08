@@ -3,7 +3,7 @@
 /* -------------------------------------------------------------------------- */
 
 * {
-    font-family: Helvetica;
+    font-family: "Roboto", Helvetica, sans-serif;
     color: #3a3a3a;
 }
 
@@ -15,12 +15,45 @@
     color: #f80046;
 }
 
+a {
+    color: inherit;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
 /* -------------------------------------------------------------------------- */
 /* NAVBAR
 /* -------------------------------------------------------------------------- */
 
-#username {
-    margin-top: 15px;
+.dropdown-menu li a:hover {
+    color: white;
+    background-color: #f80046;
+}
+
+#user-menu,
+#signin-btn {
+    margin-right: 5px;
+}
+
+#signup-btn {
+    border-color: #f80046;
+
+    color: white;
+    background-color: #f80046;
+}
+
+/* -------------------------------------------------------------------------- */
+/* AUTHENTICATION PAGES
+/* -------------------------------------------------------------------------- */
+
+.page-header {
+    text-align: center;
+}
+
+div input {
+    width: 100%;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -41,11 +74,7 @@ table {
     width: 100%;
 }
 
-thead,
-tbody,
-th,
-tr,
-td {
+table * {
     display: block;
 }
 
@@ -94,7 +123,7 @@ tr:after {
     width: 7%;
 }
 
-.btn-url {
+.songkick-sm {
     width: 16px;
     height: 16px;
     border: 0;

@@ -19,14 +19,12 @@
                         <th class="listing-venue">Venue</th>
                         <th class="listing-url">URL</th>
                     </thead>
-
                     <tbody>
                         {% for id in e_ids %}
                             <tr>
                                 <td class="listing-date">
                                     {{ e_dates|get_value:id }}
                                 </td>
-
                                 <td class="listing-time">
                                     {% if not e_times|get_value:id == None %}
                                         {{ e_times|get_value:id }}
@@ -34,7 +32,6 @@
                                         N/A
                                     {% endif %}
                                 </td>
-
                                 <td class="listing-lineup">
                                     {% for headliner in e_artists|get_value:id|slice:"0:1" %}
                                         {% if e_types|get_value:id == "Festival" %}
@@ -48,7 +45,6 @@
                                         <li>{{ support }}</li>
                                     {% endfor %}
                                 </td>
-
                                 <td class="listing-venue">
                                     {% if not e_venues|get_value:id == None %}
                                         {{ e_venues|get_value:id }}
@@ -56,10 +52,9 @@
                                         N/A
                                     {% endif %}
                                 </td>
-
                                 <td class="listing-url">
                                     <a href="{{ e_urls|get_value:id }}" target="_blank">
-                                        <img class="btn-url" alt="Songkick Event Page" src="{% static 'img/songkick.png' %}" />
+                                        <img class="songkick-sm" alt="View this event on Songkick" src="{% static 'img/songkick.png' %}" />
                                     </a>
                                 </td>
                             </tr>
@@ -92,7 +87,3 @@ function getVenues() {
     "{% endfor %}"
 }
 </script>
-
-<!-- JS -->
-<script src="http://maps.googleapis.com/maps/api/js"></script>
-<script src="{% static 'js/map.js' %}"></script>
