@@ -1,11 +1,15 @@
 /* -------------------------------------------------------------------------- */
-/* COMMON
+/* DEFAULT FONT
 /* -------------------------------------------------------------------------- */
 
 * {
-    font-family: "Roboto", Helvetica, sans-serif;
     color: #3a3a3a;
+    font-family: "Roboto", Helvetica, sans-serif;
 }
+
+/* -------------------------------------------------------------------------- */
+/* PRIMARY COLOURS
+/* -------------------------------------------------------------------------- */
 
 .songkick-black {
     color: #3a3a3a;
@@ -15,82 +19,70 @@
     color: #f80046;
 }
 
-a {
-    color: inherit;
-}
-
-a:hover {
-    text-decoration: none;
-}
-
 /* -------------------------------------------------------------------------- */
-/* NAVBAR LEFT
+/* PRIMARY ELEMENTS
 /* -------------------------------------------------------------------------- */
 
-#city-btn {
-    border-color: #3a3a3a;
+.glowable:focus {
+    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.075) inset, 0 0 6px #f80046;
+    border-color: #f80046;
+    outline: none;
 }
 
-#city-btn,
-#city-menu li a:hover {
-    color: white;
+.dropdown-black li a:hover {
     background-color: #3a3a3a;
+    color: white;
+}
+
+.dropdown-pink li a:hover {
+    background-color: #f80046;
+    color: white;
 }
 
 /* -------------------------------------------------------------------------- */
-/* NAVBAR SEARCH
+/* NAVBAR
 /* -------------------------------------------------------------------------- */
 
-#by-btn {
-    max-width: 85px;
-    min-width: 85px;
+.navbar {
+    margin: 0px;
 }
 
-#by-select {
+#city-menu-btn,
+#city-menu-btn:hover,
+#city-menu-btn:focus {
+    background-color: #3a3a3a;
+    border-color: #3a3a3a;
+    color: white;
+}
+
+#by-menu-label {
+    min-width: 80px;
+    max-width: 80px;
+}
+
+#by-menu-select {
     display: none;
 }
 
-#search-msg {
-    margin-left: 5px;
+#search-field {
+    width: 80px;
 }
 
-/* -------------------------------------------------------------------------- */
-/* NAVBAR RIGHT
-/* -------------------------------------------------------------------------- */
+#search-message {
+    margin-left: 2px;
+}
 
-#signup-btn {
-    border-color: #f80046;
-
-    color: white;
+#signup-btn,
+#signup-btn:hover
+#signup-btn:focus {
     background-color: #f80046;
+    border-color: #f80046;
+    color: white;
 }
 
 #signin-btn,
-#user-btn {
+#user-menu-btn {
     margin-right: 5px;
-}
-
-#user-menu li a:hover {
-    color: white;
-    background-color: #f80046;
-}
-
-/* -------------------------------------------------------------------------- */
-/* AUTHENTICATION PAGES
-/* -------------------------------------------------------------------------- */
-
-.page-header {
-    text-align: center;
-}
-
-.account-input {
-    width: 100%;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: #f80046;
-    box-shadow: 0 0px 0px rgba(0, 0, 0, 0.075) inset, 0 0 6px #f80046;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -98,9 +90,8 @@ a:hover {
 /* -------------------------------------------------------------------------- */
 
 #map {
-    width: 100%;
-    height: 600px;
-    margin: 5px;
+    width: 105%;
+    height: 620px;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -109,6 +100,7 @@ a:hover {
 
 table {
     width: 100%;
+    margin-top: -5px;
 }
 
 table * {
@@ -117,35 +109,24 @@ table * {
 
 tbody {
     overflow-y: auto;
-    height: 570px;
-}
-
-th {
-    height: 30px;
-
-    text-align: left;
+    height: 590px;
 }
 
 th,
 td {
     float: left;
-
     width: 25%;
 }
 
+th {
+    height: 30px;
+    text-align: left;
+}
+
 tr:after {
-    content: ' ';
-
-    display: block;
     clear: both;
-}
-
-.listing-venue {
-    width: 30%;
-}
-
-.listing-lineup {
-    width: 40%;
+    display: block;
+    content: ' ';
 }
 
 .listing-date {
@@ -156,12 +137,63 @@ tr:after {
     width: 8%;
 }
 
+.listing-lineup {
+    width: 40%;
+}
+
+.listing-venue {
+    width: 30%;
+}
+
 .listing-url {
     width: 7%;
 }
 
-.songkick-sm {
+.songkick-icon {
     width: 16px;
     height: 16px;
     border: 0;
+}
+
+/* -------------------------------------------------------------------------- */
+/* ACCOUNT PAGES
+/* -------------------------------------------------------------------------- */
+
+.page-header {
+    text-align: center;
+}
+
+.account-input {
+    width: 100%;
+}
+
+/* -------------------------------------------------------------------------- */
+/* DEFAULTS
+/* -------------------------------------------------------------------------- */
+
+a {
+    color: inherit;
+}
+
+a:hover,
+a:focus,
+a:visited {
+    text-decoration: none;
+}
+
+.btn:focus,
+.btn:active {
+    outline: none;
+}
+
+input[type="date"]:focus {
+    box-shadow: none;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    background: none;
 }

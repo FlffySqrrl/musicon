@@ -4,13 +4,16 @@
 {% load custom_tags %}
 
 <body>
-    <div class="row">
-        <div class="col-md-5">
-            <div id="map"></div>
-        </div>
+    {% block content %}
+        <div class="row">
 
-        <div class="col-md-7">
-            {% block content %}
+            <!-- MAP -->
+            <div class="col-md-5">
+                <div id="map"></div>
+            </div>
+
+            <!-- LISTING -->
+            <div class="col-md-7">
                 <table class="table table-responsive table-striped">
                     <thead>
                         <th class="listing-date">Date</th>
@@ -54,16 +57,16 @@
                                 </td>
                                 <td class="listing-url">
                                     <a href="{{ e_urls|get_value:id }}" target="_blank">
-                                        <img class="songkick-sm" alt="View this event on Songkick" src="{% static 'img/songkick.png' %}" />
+                                        <img class="songkick-icon" alt="View this event on Songkick" src="{% static 'img/songkick.png' %}" />
                                     </a>
                                 </td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-            {% endblock %}
+            </div>
         </div>
-    </div>
+    {% endblock %}
 </body>
 
 <script>

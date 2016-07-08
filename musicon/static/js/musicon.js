@@ -1,6 +1,13 @@
+var cities = {
+    "vancouver" : {
+        "lat" : 49.25,
+        "lng" : -123.13,
+    },
+};
+
 // Map location
-var LAT = 49.25;
-var LNG = -123.13;
+var LAT = cities["vancouver"]["lat"];
+var LNG = cities["vancouver"]["lng"];
 
 // Global variables
 var mapEvents = [];
@@ -12,29 +19,39 @@ $(document).ready(function() {
     $("[data-toggle='tooltip']").tooltip();
 
     // -------------------------------------------------------------------------
-    // SEARCH FUNCTIONS
+    // SEARCH FORM
     // -------------------------------------------------------------------------
 
-    // Convert select into a dropdown menu.
-    $("#by-menu li a").click(function() {
-        $("#by-btn").html($(this).html());
-        $("#by-select option").prop("selected", false)
-                              .filter("[value=" + $("#by-btn").html().toLowerCase() + "]")
-                              .prop("selected", true);
+    // Convert the dropdown menu into a select element.
+    $("#by-menu-dropdown li a").click(function() {
+        $("#by-menu-label").html($(this).html());
+        $("#by-menu-select option").prop("selected", false)
+                                   .filter("[value=" + $(this).attr("value") + "]")
+                                   .prop("selected", true);
     });
 
-    // Submit search form on enter.
-    $("input[name='q']").keydown(function(e) {
+    // Animate the search field.
+    $("#search-field").focus(function() {
+        $(this).attr("default-width", $(this).css("width"));
+        $(this).animate({ width : 120 }, "fast");
+    }).blur(function() {
+        var defaultWidth = $(this).attr("default-width");
+        $(this).animate({ width : defaultWidth }, "fast");
+    });
+
+    // Submit the search form on enter.
+    $("#search-field").keydown(function(e) {
         if (e.keyCode == 13) {
             e.preventDefault();
-            $("#search-submit").click();
+            $("#search-form").submit();
         }
     });
 
     // -------------------------------------------------------------------------
-    // MAP FUNCTIONS
+    // MAP
     // -------------------------------------------------------------------------
 
+    // Check to prevent error message.
     if ($("#map").is(":visible")) {
 
         // Adjust zoom levels here.
@@ -61,6 +78,7 @@ $(document).ready(function() {
             getEvents();
             getVenues();
             createMarkers();
+
             mapEvents.length = 0;
             mapVenues.length = 0;
         }

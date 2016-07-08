@@ -19,16 +19,21 @@
     <body>
         <nav class="navbar navbar-default">
             <div class="container-fluid">
+
+                <!-- LOGO -->
                 <div class="navbar-header">
                     <a class="navbar-brand" href="/">
                         <span class="songkick-black">Music</span><span class="songkick-pink">On</span>
                     </a>
                 </div>
 
+                <!-- CITY MENU -->
                 <div class="nav navbar-nav navbar-left">
                     <div class="dropdown">
-                        <button class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown" id="city-btn">Vancouver</button>
-                        <ul class="dropdown-menu" id="city-menu" role="menu">
+                        <div id="city-menu-btn" class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
+                            Vancouver
+                        </div>
+                        <ul class="dropdown-menu dropdown-black">
                             <li><a href="#">City 1</a></li>
                             <li><a href="#">City 2</a></li>
                             <li><a href="#">City 3</a></li>
@@ -36,48 +41,81 @@
                     </div>
                 </div>
 
-                <form class="nav navbar-nav navbar-form navbar-left" role="search" action="/search/" method="GET">
+                <!-- SEARCH FORM -->
+                <form id="search-form" class="nav navbar-nav navbar-left navbar-form" action="/search/" method="GET">
+
+                    <!-- BY -->
                     <div class="form-group dropdown">
                         <div class="btn-group">
-                            <button class="btn btn-default" id="by-btn" type="button">Search By</button>
-                            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <div id="by-menu-label" class="btn btn-default dropdown-label">
+                                By any
+                            </div>
+                            <div class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" id="by-menu" role="menu">
-                                <li><a>Artist</a></li>
-                                <li><a>Venue</a></li>
+                            </div>
+                            <ul id="by-menu-dropdown" class="dropdown-menu dropdown-pink">
+                                <li><a value="any">By any</a></li>
+                                <li><a value="artist">By artist</a></li>
+                                <li><a value="venue">By venue</a></li>
                             </ul>
+                            <select name="by" id="by-menu-select">
+                                <option value="any"></option>
+                                <option value="artist"></option>
+                                <option value="venue"></option>
+                            </select>
                         </div>
-                        <select id="by-select" name="by">
-                            <option></option>
-                            <option value="artist"></option>
-                            <option value="venue"></option>
-                        </select>
                     </div>
+
+                    <!-- Q -->
                     <div class="form-group">
-                        <input class="form-control" type="text" name="q" placeholder="Search" required />
+                        <input type="text" name="q" id="search-field" class="form-control glowable" placeholder="Search" />
                     </div>
+
+                    <!-- START -->
                     <div class="form-group">
-                        <input class="btn btn-default" id="search-submit" type="submit" value="Search" />
+                        <div class="btn-group">
+                            <div class="btn btn-default">
+                                From
+                            </div>
+                            <input type="date" name="start" class="btn btn-default form-control" />
+                        </div>
                     </div>
+
+                    <!-- END -->
+                    <div class="form-group">
+                        <div class="btn-group">
+                            <div class="btn btn-default">
+                                To
+                            </div>
+                            <input type="date" name="end" class="btn btn-default form-control" />
+                        </div>
+                    </div>
+
+                    <!-- SUBMIT -->
+                    <div class="form-group">
+                        <input type="submit" class="btn btn-default" value="Search" />
+                    </div>
+
+                    <!-- SEARCH MESSAGE -->
                     {% if count %}
-                        <div class="form-group" id="search-msg">
+                        <div id="search-message" class="form-group">
                             <label class="control-label">Found {{ count }} events</label>
                         </div>
                     {% endif %}
                 </form>
 
+                <!-- USER MENU -->
                 <div class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
                         <div class="dropdown">
-                            <div class="btn-group" id="user-btn">
-                                <button class="btn btn-default navbar-btn">
+                            <div id="user-menu-btn" class="btn-group">
+                                <div class="btn btn-default navbar-btn">
                                     <b><span class="songkick-pink">{{ user.first_name }} {{ user.last_name }}</span></b>
-                                </button>
-                                <button class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
+                                </div>
+                                <div class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
                                     <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" id="user-menu" role="menu">
+                                </div>
+                                <ul class="dropdown-menu dropdown-pink">
                                     <li><a href="#">Profile</a></li>
                                     <li class="divider" role="separator"></li>
                                     <li><a href="/myevents/">My Events</a></li>
@@ -89,15 +127,16 @@
                         </div>
                     {% else %}
                         <a href="/accounts/signup/">
-                            <button class="btn btn-default navbar-btn" id="signup-btn">Sign up</button>
+                            <div id="signup-btn" class="btn btn-default navbar-btn">Sign up</div>
                         </a>
                         <a href="/accounts/signin/">
-                            <button class="btn btn-default navbar-btn" id="signin-btn">Sign in</button>
+                            <div id="signin-btn" class="btn btn-default navbar-btn">Sign in</div>
                         </a>
                     {% endif %}
                 </div>
-            </div>
-        </nav>
+
+            </div> <!-- /.container-fluid -->
+        </nav> <!-- /.navbar-default -->
     </body>
 
     {% block content %}
