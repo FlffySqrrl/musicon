@@ -122,16 +122,16 @@ class FavVenue(models.Model):
         return str(self.user_id.username) + ' - ' + str(self.venue_id.venue_name)
 
 # ------------------------------------------------------------------------------
-# LAST UPDATED
+# DATABASE UPDATES TRACKER
 # ------------------------------------------------------------------------------
 
-class LastUpdated(models.Model):
+class Update(models.Model):
     date  = models.DateField()
-    count = models.IntegerField('Update Count')
+    note  = models.CharField('Note', max_length=100, null=True)
 
     class Meta:
-        ordering = ['date']
-        verbose_name_plural = 'LastUpdated'
+        ordering = ['-date']
+        verbose_name_plural = 'Updates'
 
     def __unicode__(self):
-        return str(self.count) + ' updates on ' + str(self.date)
+        return str(self.date)

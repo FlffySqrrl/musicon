@@ -52,9 +52,9 @@ class FavVenueAdmin(admin.ModelAdmin):
     model = FavVenue
     list_display = ['user_id', 'venue_id']
 
-class LastUpdatedAdmin(admin.ModelAdmin):
-    model = LastUpdated
-    list_display = ['date', 'count']
+class UpdateAdmin(admin.ModelAdmin):
+    model = Update
+    list_display = ['date', 'note']
 
 # ------------------------------------------------------------------------------
 # ADMIN INCLUSIONS
@@ -67,4 +67,4 @@ admin.site.register(HasArtist, HasArtistAdmin)
 admin.site.register(HasVenue, HasVenueAdmin)
 admin.site.register(FavEvent, FavEventAdmin)
 admin.site.register(FavVenue, FavVenueAdmin)
-admin.site.register(LastUpdated, LastUpdatedAdmin)
+admin.site.register(Update, UpdateAdmin)
