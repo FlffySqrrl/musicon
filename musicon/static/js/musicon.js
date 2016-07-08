@@ -64,10 +64,10 @@ $(document).ready(function() {
         var infoWindow = new google.maps.InfoWindow({
             pixelOffset : new google.maps.Size(0, -25)
         });
-        google.maps.event.addDomListener(window, "load", initialize(LAT, LNG));
+        google.maps.event.addDomListener(window, "load", initMap(LAT, LNG));
 
         // Plots the map every time the page is loaded.
-        function initialize(lat, lng) {
+        function initMap(lat, lng) {
             var mapSettings = {
                 zoom      : INITIAL_ZOOM,
                 center    : new google.maps.LatLng(lat, lng),
@@ -88,15 +88,52 @@ $(document).ready(function() {
             for (var i = 0; i < mapEvents.length; ++i) {
                 var lat = mapVenues[i][1];
                 var lng = mapVenues[i][2];
+
+                var content = "<div>" + mapEvents[i]["date"];
+                if (mapEvents[i]["time"]) {
+                    content += " " + mapEvents[i]["time"];
+                }
+                if (mapEvents[i]["venue"]) {
+                    content += " at " + mapEvents[i]["venue"];
+                }
+                content += "</div>";
+                if (mapEvents[i]["type"] === "Festival") {
+                    content += "<div><strong class='songkick-pink'>";
+                } else {
+                    content += "<div><strong>";
+                }
+                content += mapEvents[i]["lineup"][0] + "</strong></div>";
+                for (var j = 1; j < mapEvents[i]["lineup"].length; ++j) {
+                    content += "<div>" + mapEvents[i]["lineup"][j] + "</div>";
+                }
+
                 var thisMarker = new google.maps.Marker({
                     map       : map,
-                    title     : mapEvents[i][0],
+                    content   : content,
                     position  : new google.maps.LatLng(lat, lng),
                     animation : google.maps.Animation.DROP
                 });
                 mapMarkers.push(thisMarker);
                 setClickEvent(thisMarker);
             }
+        }
+
+        // Zooms the map in to where the marker is.
+        // Displays event_name in event_form.
+        // Displays lat and lng in venue_form.
+        function setClickEvent(marker) {
+            google.maps.event.addListener(marker, "click", function() {
+                var markerContent = marker.content.replace("&#39;", "'");
+                var markerPosition = marker.getPosition();
+
+                map.setCenter(markerPosition);
+                map.setZoom(CLICKED_ZOOM);
+                initInfoWindow(markerContent, markerPosition);
+
+                // document.getElementById("id_lat").value = markerPosition.lat();
+                // document.getElementById("id_lng").value = markerPosition.lng();
+                // document.getElementById("id_event_name").value = markerTitle;
+            });
         }
 
         // Checks whether or not infoWindow is enabled.
@@ -106,31 +143,13 @@ $(document).ready(function() {
         }
 
         // Enables infoWindow when a marker is clicked on.
-        function initializeInfoWindow(eventName, eventLoc) {
+        function initInfoWindow(markerContent, markerPosition) {
             if (isInfoWindowOpen(infoWindow)) {
                 infoWindow.close();
             }
-            infoWindow.setContent("<b>" + eventName + "</b>");
-            infoWindow.setPosition(eventLoc);
+            infoWindow.setContent(markerContent);
+            infoWindow.setPosition(markerPosition);
             infoWindow.open(map);
-        }
-
-        // Zooms the map in to where the marker is.
-        // Displays event_name in event_form.
-        // Displays lat and lng in venue_form.
-        function setClickEvent(marker) {
-            google.maps.event.addListener(marker, "click", function() {
-                var markerTitle = marker.getTitle().replace("&#39;", "'");
-                var markerPosition = marker.getPosition();
-
-                map.setCenter(markerPosition);
-                map.setZoom(CLICKED_ZOOM);
-                initializeInfoWindow(markerTitle, marker.position);
-
-                // document.getElementById("id_lat").value = markerPosition.lat();
-                // document.getElementById("id_lng").value = markerPosition.lng();
-                // document.getElementById("id_event_name").value = markerTitle;
-            });
         }
     }
 });
