@@ -70,3 +70,29 @@
         </div> <!-- /.col-md-7 -->
     </div> <!-- /.row -->
 </body>
+
+<script>
+function getEvents() {
+    var thisEvent;
+    "{% for e in events %}"
+        thisEvent = [];
+        thisEvent.push("{{ e.event_name }}");
+        mapEvents.push(thisEvent);
+    "{% endfor %}"
+}
+
+function getVenues() {
+    var thisVenue;
+    "{% for v in venues %}"
+        thisVenue = [];
+        thisVenue.push("{{ v.venue_name }}");
+        thisVenue.push("{{ v.lat }}");
+        thisVenue.push("{{ v.lng }}");
+        mapVenues.push(thisVenue);
+    "{% endfor %}"
+}
+</script>
+
+<!-- JS -->
+<script src="http://maps.googleapis.com/maps/api/js"></script>
+<script src="{% static 'js/map.js' %}"></script>

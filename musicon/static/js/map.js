@@ -7,10 +7,14 @@ var mapEvents = [];
 var mapVenues = [];
 
 $(document).ready(function() {
-    var mapMarkers = [];
+
+    // Adjust zoom levels here.
+    var INITIAL_ZOOM = 12;
+    var CLICKED_ZOOM = 14;
 
     // Initialize the map.
     var map;
+    var mapMarkers = [];
     var infoWindow = new google.maps.InfoWindow({
         pixelOffset : new google.maps.Size(0, -25)
     });
@@ -19,7 +23,7 @@ $(document).ready(function() {
     // Plots the map every time the page is loaded.
     function initialize(lat, lng) {
         var mapSettings = {
-            zoom      : 10,
+            zoom      : INITIAL_ZOOM,
             center    : new google.maps.LatLng(lat, lng),
             mapTypeId : google.maps.MapTypeId.ROADMAP
         };
@@ -44,7 +48,7 @@ $(document).ready(function() {
                 animation : google.maps.Animation.DROP
             });
             mapMarkers.push(thisMarker);
-            clickMarker(thisMarker);
+            setClickEvent(thisMarker);
         }
     }
 
@@ -67,13 +71,13 @@ $(document).ready(function() {
     // Zooms the map in to where the marker is.
     // Displays event_name in event_form.
     // Displays lat and lng in venue_form.
-    function clickMarker(marker) {
+    function setClickEvent(marker) {
         google.maps.event.addListener(marker, "click", function() {
             var markerTitle = marker.getTitle().replace("&#39;", "'");
             var markerPosition = marker.getPosition();
 
             map.setCenter(markerPosition);
-            map.setZoom(14);
+            map.setZoom(CLICKED_ZOOM);
             initializeInfoWindow(markerTitle, marker.position);
 
             // document.getElementById("id_lat").value = markerPosition.lat();
