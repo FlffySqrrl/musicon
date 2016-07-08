@@ -36,16 +36,17 @@ def get_events_by_ip(api_key, ip):
 def parse_events(calendar):
     events = []
     for e in calendar['resultsPage']['results']['event']:
-        this_event = { 'id'   : e['id'],
-                       'name' : e['displayName'],
-                       'type' : e['type'],
-                       'url'  : e['uri'],
-                       'date' : e['start']['date'],
-                       'time' : e['start']['time'],
-                       'stat' : e['status'],
-                       'pop'  : e['popularity'],
-                       'age'  : e['ageRestriction']
-                     }
+        this_event = {
+            'id'   : e['id'],
+            'name' : e['displayName'],
+            'type' : e['type'],
+            'url'  : e['uri'],
+            'date' : e['start']['date'],
+            'time' : e['start']['time'],
+            'stat' : e['status'],
+            'pop'  : e['popularity'],
+            'age'  : e['ageRestriction'],
+        }
         events.append(this_event)
     return events
 
@@ -53,26 +54,28 @@ def parse_artists(calendar):
     artists = []
     for e in calendar['resultsPage']['results']['event']:
         for p in e['performance']:
-            this_artist = { 'id'    : p['artist']['id'],
-                            'name'  : p['artist']['displayName'],
-                            'url'   : p['artist']['uri'],
-                            'order' : p['billingIndex'],
-                            'e_id'  : e['id']
-                          }
+            this_artist = {
+                'id'    : p['artist']['id'],
+                'name'  : p['artist']['displayName'],
+                'url'   : p['artist']['uri'],
+                'order' : p['billingIndex'],
+                'e_id'  : e['id'],
+            }
             artists.append(this_artist)
     return artists
 
 def parse_venues(calendar):
     venues = []
     for e in calendar['resultsPage']['results']['event']:
-        this_venue = { 'id'   : e['venue']['id'],
-                       'name' : e['venue']['displayName'],
-                       'url'  : e['venue']['uri'],
-                       'city' : e['venue']['metroArea']['displayName'],
-                       'lat'  : e['venue']['lat'],
-                       'lng'  : e['venue']['lng'],
-                       'e_id' : e['id']
-                     }
+        this_venue = {
+            'id'   : e['venue']['id'],
+            'name' : e['venue']['displayName'],
+            'url'  : e['venue']['uri'],
+            'city' : e['venue']['metroArea']['displayName'],
+            'lat'  : e['venue']['lat'],
+            'lng'  : e['venue']['lng'],
+            'e_id' : e['id'],
+        }
         venues.append(this_venue)
     return venues
 
@@ -86,16 +89,17 @@ def update_event(events):
             this_event = Event.objects.get(event_id = e['id'])
         except ObjectDoesNotExist:
             if e['id']:
-                this_event = Event( event_id   = e['id'],
-                                    event_name = e['name'],
-                                    event_type = e['type'],
-                                    event_url  = e['url'],
-                                    start_date = e['date'],
-                                    start_time = e['time'],
-                                    status     = e['stat'],
-                                    popularity = e['pop'],
-                                    age_limit  = e['age']
-                                  )
+                this_event = Event(
+                    event_id   = e['id'],
+                    event_name = e['name'],
+                    event_type = e['type'],
+                    event_url  = e['url'],
+                    start_date = e['date'],
+                    start_time = e['time'],
+                    status     = e['stat'],
+                    popularity = e['pop'],
+                    age_limit  = e['age']
+                )
                 this_event.save()
         if e['id']:
             this_event.event_name = e['name']
@@ -114,10 +118,11 @@ def update_artist(artists):
             this_artist = Artist.objects.get(artist_id = a['id'])
         except ObjectDoesNotExist:
             if a['id']:
-                this_artist = Artist( artist_id   = a['id'],
-                                      artist_name = a['name'],
-                                      artist_url  = a['url']
-                                    )
+                this_artist = Artist(
+                    artist_id   = a['id'],
+                    artist_name = a['name'],
+                    artist_url  = a['url']
+                )
                 this_artist.save()
         if a['id']:
             this_artist.artist_name = a['name']
@@ -130,13 +135,14 @@ def update_venue(venues):
             this_venue = Venue.objects.get(venue_id = v['id'])
         except ObjectDoesNotExist:
             if v['id']:
-                this_venue = Venue( venue_id   = v['id'],
-                                    venue_name = v['name'],
-                                    venue_url  = v['url'],
-                                    city       = v['city'],
-                                    lat        = v['lat'],
-                                    lng        = v['lng']
-                                  )
+                this_venue = Venue(
+                    venue_id   = v['id'],
+                    venue_name = v['name'],
+                    venue_url  = v['url'],
+                    city       = v['city'],
+                    lat        = v['lat'],
+                    lng        = v['lng']
+                )
         if v['id']:
             this_venue.venue_name = v['name']
             this_venue.venue_url  = v['url']
@@ -154,15 +160,17 @@ def update_has_artist(events, artists):
         for a in artists:
             if e['id'] == a['e_id']:
                 try:
-                    this_has_artist = HasArtist.objects.get( event_id  = Event.objects.get(event_id = e['id']),
-                                                             artist_id = Artist.objects.get(artist_id = a['id'])
-                                                           )
+                    this_has_artist = HasArtist.objects.get(
+                        event_id  = Event.objects.get(event_id = e['id']),
+                        artist_id = Artist.objects.get(artist_id = a['id'])
+                    )
                 except ObjectDoesNotExist:
                     if e['id']:
-                        this_has_artist = HasArtist( event_id     = Event.objects.get(event_id = e['id']),
-                                                     artist_id    = Artist.objects.get(artist_id = a['id']),
-                                                     artist_order = a['order']
-                                                   )
+                        this_has_artist = HasArtist(
+                            event_id     = Event.objects.get(event_id = e['id']),
+                            artist_id    = Artist.objects.get(artist_id = a['id']),
+                            artist_order = a['order']
+                        )
                         this_has_artist.save()
                 if e['id']:
                     this_has_artist.artist_id    = Artist.objects.get(artist_id = a['id'])
@@ -174,14 +182,16 @@ def update_has_venue(events, venues):
         for v in venues:
             if e['id'] == v['e_id']:
                 try:
-                    this_has_venue = HasVenue.objects.get( event_id = Event.objects.get(event_id = e['id']),
-                                                           venue_id = Venue.objects.get(venue_id = v['id'])
-                                                         )
+                    this_has_venue = HasVenue.objects.get(
+                        event_id = Event.objects.get(event_id = e['id']),
+                        venue_id = Venue.objects.get(venue_id = v['id'])
+                    )
                 except ObjectDoesNotExist:
                     if e['id'] and v['id']:
-                        this_has_venue = HasVenue( event_id = Event.objects.get(event_id = e['id']),
-                                                   venue_id = Venue.objects.get(venue_id = v['id'])
-                                                 )
+                        this_has_venue = HasVenue(
+                            event_id = Event.objects.get(event_id = e['id']),
+                            venue_id = Venue.objects.get(venue_id = v['id'])
+                        )
                 if e['id'] and v['id']:
                     this_has_venue.venue_id = Venue.objects.get(venue_id = v['id'])
                     this_has_venue.save()

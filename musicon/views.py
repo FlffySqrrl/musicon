@@ -290,22 +290,23 @@ def collect_events(events):
         e_times[e.event_id]   = e.start_time[:5] if e.start_time else None
         e_pops[e.event_id]    = e.popularity
 
-    context = Context({ 'events'     : events,
-                        'artists'    : artists,
-                        'venues'     : venues,
+    context = Context({
+        'events'     : events,
+        'artists'    : artists,
+        'venues'     : venues,
 
-                        'e_ids'      : e_ids,
-                        'e_artists'  : e_artists,
-                        'e_venues'   : e_venues,
-                        'e_types'    : e_types,
-                        'e_urls'     : e_urls,
-                        'e_dates'    : e_dates,
-                        'e_times'    : e_times,
-                        'e_pops'     : e_pops,
+        'e_ids'      : e_ids,
+        'e_artists'  : e_artists,
+        'e_venues'   : e_venues,
+        'e_types'    : e_types,
+        'e_urls'     : e_urls,
+        'e_dates'    : e_dates,
+        'e_times'    : e_times,
+        'e_pops'     : e_pops,
 
-                        'event_form' : event_form,
-                        'venue_form' : venue_form,
-                     })
+        'event_form' : event_form,
+        'venue_form' : venue_form,
+     })
     return context
 
 # ------------------------------------------------------------------------------
@@ -322,7 +323,7 @@ def signup(request):
             form.save()
             return render(request, 'signup_success.html')
         else:
-            return render(request, 'signup.html', { 'error' : True })
+            return render(request, 'signup.html', { 'error' : True, })
     return render(request, 'signup.html')
 
 @csrf_protect
@@ -337,7 +338,7 @@ def signin(request):
             auth.login(request, user)
             return HttpResponseRedirect('/')
         else:
-            return render(request, 'signin.html', { 'error' : True })
+            return render(request, 'signin.html', { 'error' : True, })
     return render(request, 'signin.html')
 
 @csrf_protect
