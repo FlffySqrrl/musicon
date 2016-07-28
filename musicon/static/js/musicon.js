@@ -14,14 +14,14 @@ var mapEvents  = [];
 var mapVenues  = [];
 var mapMarkers = [];
 
-$(document).ready(function() {
+$(document).ready(function () {
 
     // Enable tooltips.
     $("[data-toggle='tooltip']").tooltip();
 
-    $("tr").click(function() {
+    $("tr").click(function () {
         var eventId = $(this).attr("id");
-        var marker = mapMarkers.reduce(function(a, b) {
+        var marker = mapMarkers.reduce(function (a, b) {
             return (a["eventId"] === eventId && a) || (b["eventId"] === eventId && b);
         });
         new google.maps.event.trigger(marker, "click");
@@ -32,7 +32,7 @@ $(document).ready(function() {
     // -------------------------------------------------------------------------
 
     // Convert the dropdown menu into a select element.
-    $("#by-menu-dropdown li a").click(function() {
+    $("#by-menu-dropdown li a").click(function () {
         $("#by-menu-label").html($(this).html());
         $("#by-menu-select option").prop("selected", false)
                                    .filter("[value=" + $(this).attr("value") + "]")
@@ -40,17 +40,17 @@ $(document).ready(function() {
     });
 
     // Animate the search field.
-    $("#search-field").focus(function() {
+    $("#search-field").focus(function () {
         $(this).attr("default-width", $(this).css("width"));
         $(this).animate({ width : 150 }, "fast");
-    }).blur(function() {
+    }).blur(function () {
         var defaultWidth = $(this).attr("default-width");
         $(this).animate({ width : defaultWidth }, "fast");
     });
 
     // Submit the search form on enter.
-    $("#search-field").keydown(function(e) {
-        if (e.keyCode == 13) {
+    $("#search-field").keydown(function (e) {
+        if (e.keyCode === 13) {
             e.preventDefault();
             $("#search-form").submit();
         }
@@ -136,7 +136,7 @@ $(document).ready(function() {
          * Sets what happens when a marker is clicked on.
          */
         function setClickEvent(marker) {
-            google.maps.event.addListener(marker, "click", function() {
+            google.maps.event.addListener(marker, "click", function () {
                 var markerContent = marker.content.replace("&#39;", "'");
                 var markerPosition = marker.getPosition();
 
