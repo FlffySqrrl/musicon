@@ -6,15 +6,20 @@ from django.forms import ModelForm
 
 from models import *
 
+
 class EventForm(ModelForm):
+
     class Meta:
         model = Event
         fields = ['event_name']
 
+
 class VenueForm(ModelForm):
+
     class Meta:
         model = Venue
         fields = ['lat', 'lng']
+
 
 class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)

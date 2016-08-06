@@ -4,9 +4,13 @@ import urllib2
 from django.contrib import auth
 from django.core.context_processors import csrf
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, render_to_response
-from django.template import Context, loader, RequestContext
+from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.shortcuts import render_to_response
+from django.template import Context
+from django.template import RequestContext
+from django.template import loader
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
 
@@ -19,9 +23,9 @@ from parse import *
 # ------------------------------------------------------------------------------
 
 def events(request):
-    '''
-    Displays all upcoming events.
-    '''
+    """
+    Display all upcoming events.
+    """
     events = []
 
     # Get all upcoming events.
@@ -39,9 +43,9 @@ def events(request):
 # ------------------------------------------------------------------------------
 
 def search(request):
-    '''
-    Filters events based on the search criteria.
-    '''
+    """
+    Filter events based on the search criteria.
+    """
     events = []
 
     # Parse URL query string.
@@ -114,7 +118,6 @@ def search(request):
                 if e.event_id not in event_ids:
                     event_ids.append(e.event_id)
 
-
     # Filter events by date(s).
     if start and end:
         upcoming = upcoming.filter(start_date__gte=start, start_date__lte=end)
@@ -147,9 +150,9 @@ def search(request):
 # ------------------------------------------------------------------------------
 
 def add_fav_event(request):
-    '''
-    Adds the matching event to FavEvent when the user clicks on 'Add Event'.
-    '''
+    """
+    Add the matching event to FavEvent when the user clicks on 'Add Event'.
+    """
     curr_fav_events = []
 
     if request.user.is_authenticated():
@@ -172,10 +175,11 @@ def add_fav_event(request):
 
     return disp_fav_events(request)
 
+
 def add_fav_venue(request):
-    '''
-    Adds the matching venue to FavVenue when the user clicks on 'Add Venue'.
-    '''
+    """
+    Add the matching venue to FavVenue when the user clicks on 'Add Venue'.
+    """
     curr_fav_venues = []
 
     if request.user.is_authenticated():
@@ -200,9 +204,9 @@ def add_fav_venue(request):
 # ------------------------------------------------------------------------------
 
 def disp_fav_events(request):
-    '''
-    Displays a user's favourite events.
-    '''
+    """
+    Display a user's favourite events.
+    """
     events = []
 
     fav_events = FavEvent.objects.filter(user_id=request.user.id)
@@ -213,10 +217,11 @@ def disp_fav_events(request):
     context = collect_events(events)
     return render(request, 'events.html', context)
 
+
 def disp_fav_venues(request):
-    '''
-    Displays events at a user's favourite venues.
-    '''
+    """
+    Display events at a user's favourite venues.
+    """
     events = []
 
     fav_venues = FavVenue.objects.filter(user_id=request.user.id)
@@ -234,9 +239,9 @@ def disp_fav_venues(request):
 # ------------------------------------------------------------------------------
 
 def collect_events(events):
-    '''
-    Collects event information to be fed to events.html.
-    '''
+    """
+    Collect event information to be fed to events.html.
+    """
 
     # Main entities
     # events = events
@@ -279,30 +284,30 @@ def collect_events(events):
         e_ids.append(e.event_id)
 
         e_artists[e.event_id] = lineup_names
-        e_venues[e.event_id]  = venue.venue_name if venue else None
-        e_types[e.event_id]   = e.event_type
-        e_urls[e.event_id]    = e.event_url
-        e_dates[e.event_id]   = e.start_date
-        e_times[e.event_id]   = e.start_time[:5] if e.start_time else None
-        e_pops[e.event_id]    = e.popularity
+        e_venues[e.event_id] = venue.venue_name if venue else None
+        e_types[e.event_id] = e.event_type
+        e_urls[e.event_id] = e.event_url
+        e_dates[e.event_id] = e.start_date
+        e_times[e.event_id] = e.start_time[:5] if e.start_time else None
+        e_pops[e.event_id] = e.popularity
 
     context = Context({
-        'events'     : events,
-        'artists'    : artists,
-        'venues'     : venues,
+        'events'    : events,
+        'artists'   : artists,
+        'venues'    : venues,
 
-        'e_ids'      : e_ids,
-        'e_artists'  : e_artists,
-        'e_venues'   : e_venues,
-        'e_types'    : e_types,
-        'e_urls'     : e_urls,
-        'e_dates'    : e_dates,
-        'e_times'    : e_times,
-        'e_pops'     : e_pops,
+        'e_ids'     : e_ids,
+        'e_artists' : e_artists,
+        'e_venues'  : e_venues,
+        'e_types'   : e_types,
+        'e_urls'    : e_urls,
+        'e_dates'   : e_dates,
+        'e_times'   : e_times,
+        'e_pops'    : e_pops,
 
-        'event_form' : event_form,
-        'venue_form' : venue_form,
-     })
+        'event_form': event_form,
+        'venue_form': venue_form,
+    })
     return context
 
 # ------------------------------------------------------------------------------
@@ -319,8 +324,9 @@ def signup(request):
             form.save()
             return render(request, 'signup_success.html')
         else:
-            return render(request, 'signup.html', { 'error' : True, })
+            return render(request, 'signup.html', {'error': True})
     return render(request, 'signup.html')
+
 
 @csrf_protect
 def signin(request):
@@ -334,8 +340,9 @@ def signin(request):
             auth.login(request, user)
             return HttpResponseRedirect('/')
         else:
-            return render(request, 'signin.html', { 'error' : True, })
+            return render(request, 'signin.html', {'error': True})
     return render(request, 'signin.html')
+
 
 @csrf_protect
 def signout(request):

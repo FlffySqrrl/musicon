@@ -12,18 +12,18 @@ from models import *
 # CONSTANTS
 # ------------------------------------------------------------------------------
 
-API_KEY = 'Pt2W1O3NKByZdwQL' # FlffySqrrl's
-IP_ADDR = '23.16.100.157'    # VANCITY BABY
+API_KEY = 'Pt2W1O3NKByZdwQL'
+IP_ADDR = '23.16.100.157'
 
 # ------------------------------------------------------------------------------
 # IMPORT JSON
 # ------------------------------------------------------------------------------
 
 def get_events_by_ip(api_key, ip):
-    '''
-    Returns events from the Songkick upcoming events calendar localized based
+    """
+    Return events from the Songkick upcoming events calendar localized based
     on an IP address as a JSON object.
-    '''
+    """
     json_url = 'http://api.songkick.com/api/3.0/events.json?apikey=' + api_key + '&location=ip:' + ip
     json_file = urllib2.urlopen(json_url)
     json_obj = json.load(json_file)
