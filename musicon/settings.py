@@ -14,10 +14,10 @@ if os.getenv('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'HOST': '/cloudsql/musicon-1210:musicon',
+            'HOST': '',
             'NAME': 'musicon',
-            'USER': 'root',
-            'PASSWORD': 'rock',
+            'USER': '',
+            'PASSWORD': '',
         }
     }
 elif os.getenv('SETTINGS_MODE') == 'prod':
@@ -26,10 +26,10 @@ elif os.getenv('SETTINGS_MODE') == 'prod':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'HOST': '173.194.106.138',
+            'HOST': '',
             'NAME': 'musicon',
-            'USER': 'root',
-            'PASSWORD': 'rock',
+            'USER': '',
+            'PASSWORD': '',
         }
     }
 else:
