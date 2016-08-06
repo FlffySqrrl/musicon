@@ -3,163 +3,163 @@
 {% load staticfiles %}
 
 <html lang="en">
-    <head>
-        <title>MusicOn</title>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <title>MusicOn</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <!-- ICON -->
-        <link rel="shortcut icon" href="{% static 'img/musicon.png' %}">
+    <!-- ICON -->
+    <link rel="shortcut icon" href="{% static 'img/musicon.png' %}">
 
-        <!-- CSS -->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-        <link rel="stylesheet" href="{% static 'css/musicon.css' %}">
-    </head>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="{% static 'css/musicon.css' %}">
+</head>
 
-    <body>
+<body>
 
-        <!-- NAVBAR -->
-        <nav class="navbar navbar-default">
-            <div class="container-fluid">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
 
-                <!-- LOGO -->
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/">
-                        <span class="songkick-black">Music</span><span class="songkick-pink">On</span>
-                    </a>
+            <!-- LOGO -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">
+                    <span class="songkick-black">Music</span><span class="songkick-pink">On</span>
+                </a>
+            </div>
+
+            <!-- CITY MENU -->
+            <div class="nav navbar-nav navbar-left">
+                <div class="dropdown">
+                    <div id="city-menu-btn" class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
+                        Vancouver
+                    </div>
+                    <ul class="dropdown-menu dropdown-black">
+                        <li><a href="#">City 1</a></li>
+                        <li><a href="#">City 2</a></li>
+                        <li><a href="#">City 3</a></li>
+                    </ul>
                 </div>
+            </div>
 
-                <!-- CITY MENU -->
-                <div class="nav navbar-nav navbar-left">
-                    <div class="dropdown">
-                        <div id="city-menu-btn" class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
-                            Vancouver
+            <!-- SEARCH FORM -->
+            <form id="search-form" class="nav navbar-nav navbar-left navbar-form" action="/search/" method="GET">
+
+                <!-- BY -->
+                <div class="form-group dropdown">
+                    <div class="btn-group">
+                        <div id="by-menu-label" class="btn btn-default dropdown-label">
+                            By any
                         </div>
-                        <ul class="dropdown-menu dropdown-black">
-                            <li><a href="#">City 1</a></li>
-                            <li><a href="#">City 2</a></li>
-                            <li><a href="#">City 3</a></li>
+                        <div class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span class="caret"></span>
+                        </div>
+                        <ul id="by-menu-dropdown" class="dropdown-menu dropdown-pink">
+                            <li><a value="any">By any</a></li>
+                            <li><a value="artist">By artist</a></li>
+                            <li><a value="venue">By venue</a></li>
                         </ul>
+                        <select name="by" id="by-menu-select">
+                            <option value="any"></option>
+                            <option value="artist"></option>
+                            <option value="venue"></option>
+                        </select>
                     </div>
                 </div>
 
-                <!-- SEARCH FORM -->
-                <form id="search-form" class="nav navbar-nav navbar-left navbar-form" action="/search/" method="GET">
+                <!-- Q -->
+                <div class="form-group">
+                    <input type="text" name="q" id="search-field" class="form-control glowable" placeholder="Search" />
+                </div>
 
-                    <!-- BY -->
-                    <div class="form-group dropdown">
-                        <div class="btn-group">
-                            <div id="by-menu-label" class="btn btn-default dropdown-label">
-                                By any
+                <!-- START -->
+                <div class="form-group">
+                    <div class="btn-group">
+                        <div class="btn btn-default">
+                            From
+                        </div>
+                        <input type="date" name="start" class="btn btn-default form-control" />
+                    </div>
+                </div>
+
+                <!-- END -->
+                <div class="form-group">
+                    <div class="btn-group">
+                        <div class="btn btn-default">
+                            To
+                        </div>
+                        <input type="date" name="end" class="btn btn-default form-control" />
+                    </div>
+                </div>
+
+                <!-- SUBMIT -->
+                <div class="form-group">
+                    <input type="submit" class="btn btn-default" value="Search" />
+                </div>
+
+                <!-- SEARCH MESSAGE -->
+                {% if count %}
+                    <div id="search-message" class="form-group">
+                        <label class="control-label">Found {{ count }} events</label>
+                    </div>
+                {% endif %}
+            </form>
+
+            <!-- USER MENU -->
+            <div class="nav navbar-nav navbar-right">
+                {% if user.is_authenticated %}
+                    <div class="dropdown">
+                        <div id="user-menu-btn" class="btn-group">
+                            <div class="btn btn-default navbar-btn">
+                                <strong><span class="songkick-pink">{{ user.username }}</span></strong>
                             </div>
-                            <div class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <div class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
                                 <span class="caret"></span>
                             </div>
-                            <ul id="by-menu-dropdown" class="dropdown-menu dropdown-pink">
-                                <li><a value="any">By any</a></li>
-                                <li><a value="artist">By artist</a></li>
-                                <li><a value="venue">By venue</a></li>
+                            <ul class="dropdown-menu dropdown-pink">
+                                <li><a href="#">Profile</a></li>
+                                <li class="divider" role="separator"></li>
+                                <li><a href="/myevents/">My Events</a></li>
+                                <li><a href="/myvenues/">My Venues</a></li>
+                                <li class="divider" role="separator"></li>
+                                <li><a href="/accounts/signout/">Sign out</a></li>
                             </ul>
-                            <select name="by" id="by-menu-select">
-                                <option value="any"></option>
-                                <option value="artist"></option>
-                                <option value="venue"></option>
-                            </select>
                         </div>
                     </div>
-
-                    <!-- Q -->
-                    <div class="form-group">
-                        <input type="text" name="q" id="search-field" class="form-control glowable" placeholder="Search" />
-                    </div>
-
-                    <!-- START -->
-                    <div class="form-group">
-                        <div class="btn-group">
-                            <div class="btn btn-default">
-                                From
-                            </div>
-                            <input type="date" name="start" class="btn btn-default form-control" />
-                        </div>
-                    </div>
-
-                    <!-- END -->
-                    <div class="form-group">
-                        <div class="btn-group">
-                            <div class="btn btn-default">
-                                To
-                            </div>
-                            <input type="date" name="end" class="btn btn-default form-control" />
-                        </div>
-                    </div>
-
-                    <!-- SUBMIT -->
-                    <div class="form-group">
-                        <input type="submit" class="btn btn-default" value="Search" />
-                    </div>
-
-                    <!-- SEARCH MESSAGE -->
-                    {% if count %}
-                        <div id="search-message" class="form-group">
-                            <label class="control-label">Found {{ count }} events</label>
-                        </div>
-                    {% endif %}
-                </form>
-
-                <!-- USER MENU -->
-                <div class="nav navbar-nav navbar-right">
-                    {% if user.is_authenticated %}
-                        <div class="dropdown">
-                            <div id="user-menu-btn" class="btn-group">
-                                <div class="btn btn-default navbar-btn">
-                                    <strong><span class="songkick-pink">{{ user.username }}</span></strong>
-                                </div>
-                                <div class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
-                                    <span class="caret"></span>
-                                </div>
-                                <ul class="dropdown-menu dropdown-pink">
-                                    <li><a href="#">Profile</a></li>
-                                    <li class="divider" role="separator"></li>
-                                    <li><a href="/myevents/">My Events</a></li>
-                                    <li><a href="/myvenues/">My Venues</a></li>
-                                    <li class="divider" role="separator"></li>
-                                    <li><a href="/accounts/signout/">Sign out</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    {% else %}
-                        <a href="/accounts/signup/">
-                            <div id="signup-btn" class="btn btn-default navbar-btn">Sign up</div>
-                        </a>
-                        <a href="/accounts/signin/">
-                            <div id="signin-btn" class="btn btn-default navbar-btn">Sign in</div>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        </nav>
-
-        <!-- FOOTER -->
-        <nav class="navbar navbar-default navbar-fixed-bottom">
-            <div class="container-fluid">
-                <div class="nav navbar-nav navbar-right">
-                    <a href="http://www.songkick.com">
-                        <img id="songkick-concerts" alt="Concerts by Songkick" src="{% static 'img/sk_concerts.png' %}" />
+                {% else %}
+                    <a href="/accounts/signup/">
+                        <div id="signup-btn" class="btn btn-default navbar-btn">Sign up</div>
                     </a>
-                </div>
+                    <a href="/accounts/signin/">
+                        <div id="signin-btn" class="btn btn-default navbar-btn">Sign in</div>
+                    </a>
+                {% endif %}
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <!-- JS -->
-        <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-        <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js" integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw=" crossorigin="anonymous"></script>
-        <script src="{% static 'js/jquery.scrollTo-min.js' %}"></script>
-        <script src="http://maps.googleapis.com/maps/api/js"></script>
-        <script src="{% static 'js/musicon.js' %}"></script>
-    </body>
+    <!-- FOOTER -->
+    <nav class="navbar navbar-default navbar-fixed-bottom">
+        <div class="container-fluid">
+            <div class="nav navbar-nav navbar-right">
+                <a href="http://www.songkick.com">
+                    <img id="songkick-concerts" alt="Concerts by Songkick" src="{% static 'img/sk_concerts.png' %}" />
+                </a>
+            </div>
+        </div>
+    </nav>
 
-    {% block content %}
-    {% endblock %}
+    <!-- JS -->
+    <script src="https://code.jquery.com/jquery-2.2.2.min.js" integrity="sha256-36cp2Co+/62rEAAYHLmRCPIych47CvdM+uTBJwSzWjI=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js" integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw=" crossorigin="anonymous"></script>
+    <script src="{% static 'js/jquery.scrollTo-min.js' %}"></script>
+    <script src="http://maps.googleapis.com/maps/api/js"></script>
+    <script src="{% static 'js/musicon.js' %}"></script>
+</body>
+
+{% block content %}
+{% endblock %}
 </html>

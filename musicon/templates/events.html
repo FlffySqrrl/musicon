@@ -5,67 +5,67 @@
 
 <body>
     {% block content %}
-        <div class="row">
+    <div class="row">
 
-            <!-- MAP -->
-            <div class="col-md-5">
-                <div id="map"></div>
-            </div>
-
-            <!-- LISTING -->
-            <div class="col-md-7">
-                <table class="table table-responsive table-striped">
-                    <thead>
-                        <th class="listing-date">Date</th>
-                        <th class="listing-time">Time</th>
-                        <th class="listing-lineup">Lineup</th>
-                        <th class="listing-venue">Venue</th>
-                        <th class="listing-url">URL</th>
-                    </thead>
-                    <tbody>
-                        {% for id in e_ids %}
-                            <tr id={{ id }}>
-                                <td class="listing-date">
-                                    {{ e_dates|get_value:id }}
-                                </td>
-                                <td class="listing-time">
-                                    {% if not e_times|get_value:id == None %}
-                                        {{ e_times|get_value:id }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td class="listing-lineup">
-                                    {% for headliner in e_artists|get_value:id|slice:"0:1" %}
-                                        {% if e_types|get_value:id == "Festival" %}
-                                            <strong><li class="songkick-pink">{{ headliner }}</li></strong>
-                                        {% else %}
-                                            <strong><li>{{ headliner }}</li></strong>
-                                        {% endif %}
-                                    {% endfor %}
-
-                                    {% for support in e_artists|get_value:id|slice:"1:" %}
-                                        <li>{{ support }}</li>
-                                    {% endfor %}
-                                </td>
-                                <td class="listing-venue">
-                                    {% if not e_venues|get_value:id == None %}
-                                        {{ e_venues|get_value:id }}
-                                    {% else %}
-                                        N/A
-                                    {% endif %}
-                                </td>
-                                <td class="listing-url">
-                                    <a href="{{ e_urls|get_value:id }}" target="_blank">
-                                        <img class="songkick-icon" alt="View this event on Songkick" src="{% static 'img/sk_badge.png' %}" />
-                                    </a>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <!-- MAP -->
+        <div class="col-md-5">
+            <div id="map"></div>
         </div>
+
+        <!-- LISTING -->
+        <div class="col-md-7">
+            <table class="table table-responsive table-striped">
+                <thead>
+                    <th class="listing-date">Date</th>
+                    <th class="listing-time">Time</th>
+                    <th class="listing-lineup">Lineup</th>
+                    <th class="listing-venue">Venue</th>
+                    <th class="listing-url">URL</th>
+                </thead>
+                <tbody>
+                    {% for id in e_ids %}
+                        <tr id={{ id }}>
+                            <td class="listing-date">
+                                {{ e_dates|get_value:id }}
+                            </td>
+                            <td class="listing-time">
+                                {% if not e_times|get_value:id == None %}
+                                    {{ e_times|get_value:id }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td class="listing-lineup">
+                                {% for headliner in e_artists|get_value:id|slice:"0:1" %}
+                                    {% if e_types|get_value:id == "Festival" %}
+                                        <strong><li class="songkick-pink">{{ headliner }}</li></strong>
+                                    {% else %}
+                                        <strong><li>{{ headliner }}</li></strong>
+                                    {% endif %}
+                                {% endfor %}
+
+                                {% for support in e_artists|get_value:id|slice:"1:" %}
+                                    <li>{{ support }}</li>
+                                {% endfor %}
+                            </td>
+                            <td class="listing-venue">
+                                {% if not e_venues|get_value:id == None %}
+                                    {{ e_venues|get_value:id }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td class="listing-url">
+                                <a href="{{ e_urls|get_value:id }}" target="_blank">
+                                    <img class="songkick-icon" alt="View this event on Songkick" src="{% static 'img/sk_badge.png' %}" />
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
     {% endblock %}
 
     <script>
