@@ -2,11 +2,16 @@
 
 {% load staticfiles %}
 
-<html lang="en">
+<html>
+
 <head>
-    <title>MusicOn</title>
+
+    <!-- META -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <!-- TITLE -->
+    <title>MusicOn</title>
 
     <!-- ICON -->
     <link rel="shortcut icon" href="{% static 'img/musicon.png' %}">
@@ -15,6 +20,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <link rel="stylesheet" href="{% static 'css/musicon.css' %}">
+
 </head>
 
 <body>
@@ -158,8 +164,10 @@
     <script src="{% static 'js/jquery.scrollTo-min.js' %}"></script>
     <script src="http://maps.googleapis.com/maps/api/js"></script>
     <script src="{% static 'js/musicon.js' %}"></script>
+
 </body>
 
 {% block content %}
 {% endblock %}
+
 </html>
